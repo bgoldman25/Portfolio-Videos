@@ -4,7 +4,7 @@ public/videos/*.mov
 public/videos/*.avi
 public/videos/*.wav
 public/videos/*.txt
-public/videos/*.jpg
+# public/videos/*.jpg  -- keep thumbnails
 
 # Ignore dist folder
 dist/
