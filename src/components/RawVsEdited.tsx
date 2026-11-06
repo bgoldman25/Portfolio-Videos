@@ -5,7 +5,14 @@ const RELEASE = 'https://github.com/bgoldman25/Portfolio-Videos/releases/downloa
 const RAW_CANDIDATES = ['/videos/Before_1.mp4', `${RELEASE}/Before_1.mp4`];
 const FINAL_CANDIDATES = ['/videos/After_1.mp4', `${RELEASE}/After_1.mp4`];
 
-const DRIFT_TOLERANCE = 0.12;
+/* Two separate <video> elements never stay in lockstep on their own: they start a
+   beat apart, buffer independently and drift while the tab is hidden. The raw clip
+   is the master clock and the graded clip follows it. */
+const HARD_DRIFT = 0.15; // seconds off before we seek instead of easing
+const SOFT_DRIFT = 0.03; // seconds off before we nudge playback rate
+const RATE_NUDGE = 0.08; // 8% faster/slower while catching up
+const END_GUARD = 0.04; // shared loop point, so neither side wraps alone
+const TICK_MS = 50;
 
 export const RawVsEdited: React.FC = () => {
   const [pos, setPos] = useState(50);
@@ -30,43 +37,113 @@ export const RawVsEdited: React.FC = () => {
   const rawRef = useRef<HTMLVideoElement>(null);
   const finalRef = useRef<HTMLVideoElement>(null);
 
-  /* Both clips run on their own: muted inline loops that start as soon as the
-     browser lets them, with drift corrected against the raw clip so the two
-     sides always show the same frame of the same take. */
   useEffect(() => {
-    const r = rawRef.current;
-    const f = finalRef.current;
-    if (!r || !f) return;
+    const master = rawRef.current; // raw clip drives the clock
+    const slave = finalRef.current; // graded clip follows it
+    if (!master || !slave) return;
 
-    let cancelled = false;
+    let alive = true;
+    let rafId = 0;
+    let heartbeatId = 0;
+    let lastTick = 0;
 
-    const startBoth = () => {
-      if (cancelled) return;
-      // Belt and braces: the muted property is what makes autoplay permissible.
-      r.muted = true;
-      f.muted = true;
-      void r.play().catch(() => { /* blocked or not ready yet; canplay retries */ });
-      void f.play().catch(() => { /* blocked or not ready yet; canplay retries */ });
+    const loopLength = () => {
+      const ds = [master.duration, slave.duration].filter((d) => Number.isFinite(d) && d > 0);
+      return ds.length ? Math.min(...ds) : 0;
     };
 
-    startBoth();
-    r.addEventListener('canplay', startBoth);
-    f.addEventListener('canplay', startBoth);
+    /* Start (or restart) the pair on the same frame rather than a beat apart. */
+    const resume = () => {
+      // Muted is what makes autoplay permissible, so enforce it on the element too.
+      master.muted = true;
+      slave.muted = true;
+      if (master.paused && slave.paused) {
+        try { slave.currentTime = master.currentTime; } catch { /* metadata not ready */ }
+        slave.playbackRate = 1;
+      }
+      if (master.paused) void master.play().catch(() => { /* retried on next tick */ });
+      if (slave.paused) void slave.play().catch(() => { /* retried on next tick */ });
+    };
 
-    const syncId = window.setInterval(() => {
-      if (r.paused || f.paused) return;
-      if (Math.abs(r.currentTime - f.currentTime) <= DRIFT_TOLERANCE) return;
-      try {
-        const end = (f.duration || r.duration || 0) - 0.05;
-        f.currentTime = end > 0 ? Math.min(r.currentTime, end) : r.currentTime;
-      } catch { /* seeking unavailable before metadata; next tick retries */ }
-    }, 250);
+    const reconcile = () => {
+      if (!alive) return;
+      const limit = loopLength();
+      if (!limit) return;
+
+      // Loop the pair together so the split never shows two different moments.
+      if (master.ended || slave.ended || master.currentTime >= limit - END_GUARD || slave.currentTime >= limit - END_GUARD) {
+        try { master.currentTime = 0; slave.currentTime = 0; } catch { /* noop */ }
+        master.playbackRate = 1;
+        slave.playbackRate = 1;
+        resume();
+        return;
+      }
+
+      if (master.paused || slave.paused) {
+        resume();
+        return;
+      }
+
+      const drift = master.currentTime - slave.currentTime;
+      if (Math.abs(drift) > HARD_DRIFT) {
+        // Too far gone to ease back (tab wake, buffering stall): jump the graded side.
+        try { slave.currentTime = Math.min(master.currentTime, limit - END_GUARD); } catch { /* noop */ }
+        slave.playbackRate = 1;
+      } else if (Math.abs(drift) > SOFT_DRIFT) {
+        // Small drift: nudge the rate instead of seeking, so nothing visibly jumps.
+        slave.playbackRate = drift > 0 ? 1 + RATE_NUDGE : 1 - RATE_NUDGE;
+      } else if (slave.playbackRate !== 1) {
+        slave.playbackRate = 1;
+      }
+    };
+
+    const tick = (ts: number) => {
+      if (!alive) return;
+      rafId = window.requestAnimationFrame(tick);
+      if (ts - lastTick < TICK_MS) return;
+      lastTick = ts;
+      reconcile();
+    };
+
+    /* Hidden tabs suspend media and throttle timers, which is exactly how the two
+       clips end up at different moments. Park both instead, then resume aligned. */
+    const onVisibility = () => {
+      if (document.hidden) {
+        master.pause();
+        slave.pause();
+        master.playbackRate = 1;
+        slave.playbackRate = 1;
+        return;
+      }
+      resume(); // aligns the graded clip to the raw one before either starts
+      reconcile();
+    };
+    const onPlaybackEvent = () => resume();
+
+    resume();
+    master.addEventListener('canplay', onPlaybackEvent);
+    slave.addEventListener('canplay', onPlaybackEvent);
+    master.addEventListener('playing', reconcile);
+    slave.addEventListener('playing', reconcile);
+    master.addEventListener('waiting', reconcile);
+    slave.addEventListener('waiting', reconcile);
+    document.addEventListener('visibilitychange', onVisibility);
+    rafId = window.requestAnimationFrame(tick);
+    // Frames stop when the tab is hidden, but timers keep ticking (throttled), so the
+    // pair is still reconciled in the background instead of drifting until it is seen.
+    heartbeatId = window.setInterval(reconcile, 250);
 
     return () => {
-      cancelled = true;
-      window.clearInterval(syncId);
-      r.removeEventListener('canplay', startBoth);
-      f.removeEventListener('canplay', startBoth);
+      alive = false;
+      window.cancelAnimationFrame(rafId);
+      window.clearInterval(heartbeatId);
+      master.removeEventListener('canplay', onPlaybackEvent);
+      slave.removeEventListener('canplay', onPlaybackEvent);
+      master.removeEventListener('playing', reconcile);
+      slave.removeEventListener('playing', reconcile);
+      master.removeEventListener('waiting', reconcile);
+      slave.removeEventListener('waiting', reconcile);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [rawSrc, finalSrc]);
 
