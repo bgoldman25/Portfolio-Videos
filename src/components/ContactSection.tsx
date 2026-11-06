@@ -36,7 +36,7 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="relative py-20 md:py-28 px-4 md:px-6 bg-dark border-t border-white/10">
+    <section id="contact" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-6 bg-dark border-t border-white/10">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-acid/10 border border-acid/30 text-acid font-mono text-xs rounded-full mb-3"><Film className="w-3.5 h-3.5" /> PROJECT INQUIRY</div>

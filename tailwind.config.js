@@ -9,7 +9,7 @@ export default {
         charcoal: '#121212',
         surface: '#161616',
         panel: '#1E1E1E',
-        muted: '#8E8E93',
+        muted: '#A9A9B0',
         'off-white': '#F4F4F0',
       },
       fontFamily: {

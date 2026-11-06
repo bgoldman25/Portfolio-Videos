@@ -8,7 +8,7 @@ export const BookingSection: React.FC = () => {
   const hasEmbed = !!SITE.bookingEmbedUrl;
   const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent('Discovery Call Booking Request — Baltazar Goldman')}`;
   return (
-    <section id="book" className="relative py-20 md:py-28 px-4 md:px-8 bg-charcoal border-y border-white/10 overflow-hidden">
+    <section id="book" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-8 bg-charcoal border-y border-white/10 overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none" />
       <div className="max-w-7xl mx-auto relative">
         <div className="grid lg:grid-cols-12 gap-10 items-stretch">

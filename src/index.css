@@ -4,6 +4,7 @@
 
 @layer base {
   html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+  section[id] { scroll-margin-top: 5rem; }
   body { background: #080808; color: #F4F4F0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   img, video { max-width: 100%; }
   h1, h2, h3, h4 { font-family: 'Archivo', sans-serif; }

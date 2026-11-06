@@ -3,7 +3,7 @@ import { Check, ArrowUpRight, Film, Smartphone, Star } from 'lucide-react';
 import { SERVICE_TIERS } from '../data/projects';
 
 export const ServicesSection: React.FC = () => (
-  <section id="services" className="relative py-20 md:py-28 px-4 md:px-6 bg-dark">
+  <section id="services" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-6 bg-dark">
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div><div className="flex items-center gap-2 text-xs font-mono text-acid mb-2"><Film className="w-4 h-4" /><span>[ 03 // SERVICES ]</span></div><h2 className="font-display font-black text-5xl md:text-6xl uppercase tracking-tight">Services & <span className="text-acid">offerings</span></h2></div>

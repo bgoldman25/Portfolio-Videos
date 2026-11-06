@@ -8,7 +8,7 @@ export const EditingProcess: React.FC = () => {
   const [active, setActive] = useState(0);
   const step = EDITING_PROCESS_STEPS[active];
   return (
-    <section id="process" className="relative py-20 md:py-28 px-4 md:px-6 bg-dark">
+    <section id="process" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-6 bg-dark">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div><div className="flex items-center gap-2 text-xs font-mono text-acid mb-2"><Scissors className="w-4 h-4" /><span>[ 02 // PROCESS ]</span></div><h2 className="font-display font-black text-5xl md:text-6xl uppercase tracking-tight">The cutting <span className="text-acid">process</span></h2></div>

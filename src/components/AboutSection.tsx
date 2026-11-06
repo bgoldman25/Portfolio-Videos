@@ -3,7 +3,7 @@ import { Sparkles, Flame, Zap, Video, Calendar, Clock } from 'lucide-react';
 import { SITE } from '../data/site';
 
 export const AboutSection: React.FC = () => (
-  <section id="about" className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-t border-white/10 overflow-hidden">
+  <section id="about" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-t border-white/10 overflow-hidden">
     <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 items-center">
       <div className="lg:col-span-5 relative">
         <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-white/15 bg-black group">
