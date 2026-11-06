@@ -11,6 +11,25 @@ export function useAutoPlayVideoOnScroll(videoRef: RefObject<HTMLVideoElement | 
   }, [videoRef, threshold]);
 }
 
+export function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduced(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return reduced;
+}
+
+/** Zeroes a reveal transition when the visitor asks their OS for reduced motion. */
+export function motionTiming(reduce: boolean, timing: { duration: number; delay?: number }) {
+  return reduce ? { duration: 0, delay: 0 } : timing;
+}
+
 export function useLiveTimecode() {
   const [tc, setTc] = useState('00:00:00:00');
   const frameRef = useRef(0);

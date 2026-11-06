@@ -10,13 +10,13 @@ export const Footer: React.FC = () => (
           <div className="flex items-center gap-2 text-acid mb-3"><Radio className="w-4 h-4 animate-pulse" /><span>SEQUENCE COMPLETE</span></div>
           <h2 className="font-display font-black text-4xl md:text-5xl text-white uppercase tracking-tight">Baltazar<br /><span className="text-acid">Goldman</span></h2>
           <p className="mt-3 leading-relaxed">Freelance video editor — retention-first YouTube, gaming, talking-head & short-form. {SITE.availability.label}. Reply {SITE.responseTime}.</p>
-          <div className="flex flex-wrap gap-2 mt-5">{SITE.socials.map((s) => <a key={s.label} href={s.url} target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded-full border border-white/15 hover:border-acid hover:text-acid transition-colors">{s.label} ↗</a>)}</div>
+          <div className="flex flex-wrap gap-2 mt-5">{SITE.socials.map((s) => <a key={s.label} href={s.url} target="_blank" rel="noreferrer" className="px-3 py-2 rounded-full border border-white/40 hover:border-acid hover:text-acid transition-colors">{s.label} ↗</a>)}</div>
         </div>
         <div className="flex gap-12">
-          <nav className="space-y-2.5 flex flex-col"><span className="text-acid font-bold uppercase tracking-wider">Navigate</span><a href="#work" className="hover:text-acid">Work</a><a href="#process" className="hover:text-acid">Process</a><a href="#services" className="hover:text-acid">Services</a><a href="#about" className="hover:text-acid">About</a></nav>
-          <nav className="space-y-2.5 flex flex-col"><span className="text-acid font-bold uppercase tracking-wider">Book</span><a href="#book" className="hover:text-acid">Discovery call</a><a href="#contact" className="hover:text-acid">Project brief</a><a href={`mailto:${SITE.email}`} className="hover:text-acid">{SITE.email}</a></nav>
+          <nav aria-label="Footer navigation" className="space-y-2.5 flex flex-col"><span className="text-acid font-bold uppercase tracking-wider">Navigate</span><a href="#work" className="inline-block py-1.5 hover:text-acid">Work</a><a href="#process" className="inline-block py-1.5 hover:text-acid">Process</a><a href="#services" className="inline-block py-1.5 hover:text-acid">Services</a><a href="#about" className="inline-block py-1.5 hover:text-acid">About</a></nav>
+          <nav aria-label="Footer booking and contact" className="space-y-2.5 flex flex-col"><span className="text-acid font-bold uppercase tracking-wider">Book</span><a href="#book" className="inline-block py-1.5 hover:text-acid">Discovery call</a><a href="#contact" className="inline-block py-1.5 hover:text-acid">Project brief</a><a href={`mailto:${SITE.email}`} className="inline-block py-1.5 hover:text-acid">{SITE.email}</a></nav>
         </div>
-        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Back to top" className="self-start p-3 rounded-full border border-white/15 text-white hover:text-acid hover:border-acid transition-colors"><ArrowUp className="w-5 h-5" /></button>
+        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Back to top" className="self-start p-3 rounded-full border border-white/40 text-white hover:text-acid hover:border-acid transition-colors"><ArrowUp className="w-5 h-5" /></button>
       </div>
       <div className="flex flex-col sm:flex-row justify-between gap-3 pt-6 text-[11px]"><span>© {new Date().getFullYear()} Baltazar Goldman. All rights reserved.</span><span>STORYTELLING · PACING · RETENTION</span></div>
     </div>

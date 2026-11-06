@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { soundEngine } from '../services/soundEngine';
 
 const FRAMES = [
-  { url: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1400&q=80', type: 'TALKING HEAD', word: 'CUT.' },
-  { url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1400&q=80', type: 'GAMING ANALYSIS', word: 'PACE.' },
-  { url: 'https://images.unsplash.com/photo-1616469829941-c7200edec809?auto=format&fit=crop&w=1400&q=80', type: '9:16 VERTICAL', word: 'TIMING.' },
+  { url: '/videos/source-shift-thumbnail.webp', type: 'TALKING HEAD', word: 'CUT.' },
+  { url: '/videos/marathon-thumbnail.jpg', type: 'GAMING ANALYSIS', word: 'PACE.' },
+  { url: '/videos/tim-ferris-thumbnail.jpg', type: '9:16 VERTICAL', word: 'TIMING.' },
 ];
 
 export const ColdOpen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
@@ -14,7 +14,43 @@ export const ColdOpen: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   const complete = useCallback(() => { setStage('done'); try { sessionStorage.setItem('coldopen-seen', '1'); } catch {} onComplete(); }, [onComplete]);
   const skip = useCallback(() => { soundEngine.playCutSound(); complete(); }, [complete]);
 
-  useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') skip(); }; window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [skip]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+
+  // Restore focus to whatever opened the intro (or body on first load).
+  useEffect(() => {
+    openerRef.current = document.activeElement as HTMLElement | null;
+    return () => {
+      const opener = openerRef.current;
+      if (opener && opener !== document.body && document.contains(opener)) opener.focus();
+      openerRef.current = null;
+    };
+  }, []);
+
+  // Keep focus inside the blocking intro: Escape skips, Tab wraps.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { skip(); return; }
+      if (e.key !== 'Tab' || !panelRef.current) return;
+      const focusable = [...panelRef.current.querySelectorAll<HTMLElement>('button, a[href], [tabindex]:not([tabindex="-1"])')].filter((el) => el.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!panelRef.current.contains(document.activeElement)) { e.preventDefault(); first.focus(); return; }
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [skip]);
+
+  // Stage changes unmount the clicked control; always leave focus on a control inside the dialog.
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el || el.contains(document.activeElement)) return;
+    const first = el.querySelector<HTMLElement>('button, a[href], [tabindex]:not([tabindex="-1"])');
+    (first ?? el).focus();
+  }, [stage]);
   useEffect(() => {
     if (stage !== 'cuts') return;
     let i = 0; const timer = window.setInterval(() => { i = (i + 1) % FRAMES.length; setIdx(i); soundEngine.playCutSound(); }, 650);
@@ -26,7 +62,7 @@ export const ColdOpen: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   return (
     <AnimatePresence>
       {stage !== 'done' && (
-        <motion.div key="cold" initial={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-dark flex flex-col items-center justify-center overflow-hidden select-none px-6" role="dialog" aria-label="Intro">
+        <motion.div key="cold" initial={{ opacity: 1 }} exit={{ opacity: 0 }} ref={panelRef} tabIndex={-1} className="fixed inset-0 z-50 bg-dark flex flex-col items-center justify-center overflow-hidden select-none px-6 outline-none" role="dialog" aria-modal="true" aria-label="Intro">
           <button onClick={skip} className="absolute top-5 right-5 z-10 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-mono text-white/80 hover:text-acid hover:border-acid">SKIP INTRO ✕</button>
           {stage === 'waiting' && (
             <button onClick={async () => { await soundEngine.unlockAudio(); soundEngine.playHeroRiserSound(); setStage('cuts'); }} className="flex flex-col items-center gap-5 group">

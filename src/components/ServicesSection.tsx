@@ -3,7 +3,7 @@ import { Check, ArrowUpRight, Film, Smartphone, Star } from 'lucide-react';
 import { SERVICE_TIERS } from '../data/projects';
 
 export const ServicesSection: React.FC = () => (
-  <section id="services" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-6 bg-dark">
+  <section id="services" className="relative py-20 md:py-28 px-4 md:px-6 bg-dark scroll-mt-20">
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div><div className="flex items-center gap-2 text-xs font-mono text-acid mb-2"><Film className="w-4 h-4" /><span>[ 03 // SERVICES ]</span></div><h2 className="font-display font-black text-5xl md:text-6xl uppercase tracking-tight">Services & <span className="text-acid">offerings</span></h2></div>
@@ -19,7 +19,7 @@ export const ServicesSection: React.FC = () => (
             <div className="space-y-2.5 text-sm mb-7 flex-1">{tier.deliverables.map((d) => <div key={d} className="flex gap-2.5"><Check className="w-4 h-4 text-acid shrink-0 mt-0.5" /><span className="text-off-white/90">{d}</span></div>)}</div>
             <div className="pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
               <span className="font-mono text-xs text-muted">IDEAL FOR <strong className="text-off-white">{tier.idealFor}</strong></span>
-              <a href="#contact" className="font-mono text-xs text-acid font-bold hover:underline">GET A QUOTE →</a>
+              <a href="#contact" className="inline-block py-1.5 font-mono text-xs text-acid font-bold hover:underline">GET A QUOTE →</a>
             </div>
           </article>
         ))}

@@ -2,13 +2,15 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Video, CheckCircle2, ExternalLink, Sparkles } from 'lucide-react';
 import { SITE } from '../data/site';
+import { usePrefersReducedMotion, motionTiming } from '../utils/performance';
 
 export const BookingSection: React.FC = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const hasRealBooking = !SITE.bookingUrl.includes('PASTE_YOUR');
   const hasEmbed = !!SITE.bookingEmbedUrl;
   const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent('Discovery Call Booking Request — Baltazar Goldman')}`;
   return (
-    <section id="book" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-8 bg-charcoal border-y border-white/10 overflow-hidden">
+    <section id="book" className="relative py-20 md:py-28 px-4 md:px-8 bg-charcoal border-y border-white/10 overflow-hidden scroll-mt-20">
       <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none" />
       <div className="max-w-7xl mx-auto relative">
         <div className="grid lg:grid-cols-12 gap-10 items-stretch">
@@ -30,10 +32,10 @@ export const BookingSection: React.FC = () => {
             </div>
             <div className="flex flex-wrap gap-3">
               <a href={hasRealBooking ? SITE.bookingUrl : mailto} target={hasRealBooking ? '_blank' : undefined} rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-3 bg-acid text-black font-bold rounded-full hover:bg-white transition-colors"><Sparkles className="w-4 h-4" /> {hasRealBooking ? 'Open booking calendar' : 'Request call by email'} <ExternalLink className="w-4 h-4" /></a>
-              <a href="#contact" className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 rounded-full font-semibold hover:border-acid hover:text-acid transition-colors">Skip to form</a>
+              <a href="#contact" className="inline-flex items-center gap-2 px-5 py-3 border border-white/40 rounded-full font-semibold hover:border-acid hover:text-acid transition-colors">Skip to form</a>
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="lg:col-span-7 bg-dark border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={motionTiming(reduceMotion, { duration: 0.5, delay: 0.1 })} className="lg:col-span-7 bg-dark border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 font-mono text-xs"><span className="flex items-center gap-2 text-muted"><span className="w-2 h-2 rounded-full bg-acid animate-pulse" /> Google Calendar — Appointments</span><span className="text-acid">{SITE.availability.label}</span></div>
             {hasEmbed ? (
               <iframe title="Book a discovery call" src={SITE.bookingEmbedUrl} className="w-full flex-1 min-h-[540px] bg-white" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" />

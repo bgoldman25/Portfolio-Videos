@@ -13,11 +13,17 @@ export const PROJECTS: Project[] = [
     tools: ['Premiere Pro', 'After Effects', 'Photoshop', 'Audition'],
     year: '2026',
     featured: true,
-    thumbnail: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1200&q=75',
-    poster: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1200&q=75',
-    previewVideo: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    fullVideo: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    youtubeId: 'eRsGy_F2vJw', // Sintel (Blender) placeholder — replace with client YouTube ID
+    thumbnail: '/videos/source-shift-thumbnail.webp',
+    poster: '/videos/source-shift-thumbnail.webp',
+    previewVideo: '/videos/reel-01.mp4',
+    fullVideo: 'https://github.com/bgoldman25/Portfolio-Videos/releases/download/videos-v1/Source.Shift.Masterclass.V2_1.mp4',
+    rawVideo: '/videos/Before_1.mp4',
+    finalVideo: '/videos/After_1.mp4',
+    gallery: [
+      { src: '/videos/source-shift-frame-01.webp', label: 'SEQUENCE FRAME 01' },
+      { src: '/videos/source-shift-frame-02.webp', label: 'SEQUENCE FRAME 02' },
+      { src: '/videos/source-shift-frame-03.webp', label: 'SEQUENCE FRAME 03' },
+    ],
     durationLabel: '36:50',
     metrics: { timelineDuration: '36:50:00', fps: 60, cutsCount: 298, resolution: '4K DCI', colorGrade: 'Cinematic Rec.709 Teal-Amber' },
   },
@@ -33,11 +39,15 @@ export const PROJECTS: Project[] = [
     tools: ['Premiere Pro', 'After Effects', 'Audition'],
     year: '2026',
     featured: true,
-    thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=75',
-    poster: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=75',
-    previewVideo: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    fullVideo: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    youtubeId: 'R6MlUcmOul8', // Tears of Steel placeholder
+    thumbnail: '/videos/marathon-thumbnail.jpg',
+    poster: '/videos/marathon-thumbnail.jpg',
+    previewVideo: '/videos/reel-02.mp4',
+    fullVideo: 'https://github.com/bgoldman25/Portfolio-Videos/releases/download/videos-v1/Marathon.V3.Enhanced.Voice.Audio._1.mp4',
+    gallery: [
+      { src: '/videos/marathon-frame-01.jpg', label: 'SEQUENCE FRAME 01' },
+      { src: '/videos/marathon-frame-02.jpg', label: 'SEQUENCE FRAME 02' },
+      { src: '/videos/marathon-frame-03.jpg', label: 'SEQUENCE FRAME 03' },
+    ],
     durationLabel: '13:26',
     metrics: { timelineDuration: '13:26:00', fps: 60, cutsCount: 136, resolution: '4K UHD', colorGrade: 'High Contrast Cyber Gamma' },
   },
@@ -53,21 +63,25 @@ export const PROJECTS: Project[] = [
     tools: ['Premiere Pro', 'After Effects', 'CapCut Pro'],
     year: '2026',
     featured: true,
-    thumbnail: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80',
-    poster: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80',
-    previewVideo: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    fullVideo: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    youtubeId: 'TLkA0RELQ1g', // Elephants Dream placeholder
+    thumbnail: '/videos/tim-ferris-thumbnail-landscape.jpg',
+    poster: '/videos/tim-ferris-thumbnail-landscape.jpg',
+    previewVideo: '/videos/reel-05.mp4',
+    fullVideo: 'https://github.com/bgoldman25/Portfolio-Videos/releases/download/videos-v1/Tim.Ferris.V1.mp4',
+    gallery: [
+      { src: '/videos/tim-ferris-frame-01.jpg', label: 'VERTICAL FRAME 01' },
+      { src: '/videos/tim-ferris-frame-02.jpg', label: 'VERTICAL FRAME 02' },
+      { src: '/videos/tim-ferris-frame-03.jpg', label: 'VERTICAL FRAME 03' },
+    ],
     durationLabel: '0:52',
     metrics: { timelineDuration: '00:52:18', fps: 60, cutsCount: 13, resolution: '1080x1920 (9:16)', colorGrade: 'Vibrant Neon Saturation' },
   },
 ];
 
 export const EDITING_PROCESS_STEPS: EditingProcessStep[] = [
-  { id: 'step-1', stepNumber: '01', name: 'RAW DUMP', subtitle: 'The Unfiltered Chaos', description: 'Sifting through 40+ hours of unedited raw footage, multi-track audio, and outtakes. Identifying hidden gems and gold nugget moments.', visualTreatment: 'Flat log color profile, unmixed room audio, visible stumble cuts.', timecode: '00:00:15:00', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreet.mp4', poster: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80' },
-  { id: 'step-2', stepNumber: '02', name: 'STRUCTURE & ASSEMBLY', subtitle: 'Building the Narrative Spine', description: 'Trimming dead air, removing filler words, and carving out an irresistible opening hook within the first 5 seconds to lock in retention.', visualTreatment: 'A-roll sequence timeline cut down by 65%. Clear visual narrative curve.', timecode: '00:02:40:12', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' },
-  { id: 'step-3', stepNumber: '03', name: 'PACING & RHYTHM', subtitle: 'Micro-cuts & Meme Timing', description: 'Injecting dynamic zoom punches, J-cuts, L-cuts, and internet-native meme beats. Balancing high-intensity beats with strategic breathers.', visualTreatment: 'Speed ramps, punch zooms, rhythmic frame skipping.', timecode: '00:05:12:08', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
-  { id: 'step-4', stepNumber: '04', name: 'POLISH & MOTION', subtitle: 'Visual Graphics & Sound Design', description: 'Layering custom kinetic typography, SFX impacts, custom color grading, and motion overlays to turn a good edit into an incredible experience.', visualTreatment: 'Full Rec.709 color grade, kinetic titles, spatial audio mixing.', timecode: '00:08:42:15', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
+  { id: 'step-1', stepNumber: '01', name: 'RAW DUMP', subtitle: 'The Unfiltered Chaos', description: 'Sifting through 40+ hours of unedited raw footage, multi-track audio, and outtakes. Identifying hidden gems and gold nugget moments.', visualTreatment: 'Flat log color profile, unmixed room audio, visible stumble cuts.', timecode: '00:00:15:00', videoUrl: '/videos/Before_1.mp4', poster: '/videos/Before_1-thumbnail.jpg' },
+  { id: 'step-2', stepNumber: '02', name: 'STRUCTURE & ASSEMBLY', subtitle: 'Building the Narrative Spine', description: 'Trimming dead air, removing filler words, and carving out an irresistible opening hook within the first 5 seconds to lock in retention.', visualTreatment: 'A-roll sequence timeline cut down by 65%. Clear visual narrative curve.', timecode: '00:02:40:12', videoUrl: '/videos/reel-01.mp4', poster: '/videos/source-shift-thumbnail.webp' },
+  { id: 'step-3', stepNumber: '03', name: 'PACING & RHYTHM', subtitle: 'Micro-cuts & Meme Timing', description: 'Injecting dynamic zoom punches, J-cuts, L-cuts, and internet-native meme beats. Balancing high-intensity beats with strategic breathers.', visualTreatment: 'Speed ramps, punch zooms, rhythmic frame skipping.', timecode: '00:05:12:08', videoUrl: '/videos/reel-04.mp4', poster: '/videos/marathon-thumbnail.jpg' },
+  { id: 'step-4', stepNumber: '04', name: 'POLISH & MOTION', subtitle: 'Visual Graphics & Sound Design', description: 'Layering custom kinetic typography, SFX impacts, custom color grading, and motion overlays to turn a good edit into an incredible experience.', visualTreatment: 'Full Rec.709 color grade, kinetic titles, spatial audio mixing.', timecode: '00:08:42:15', videoUrl: '/videos/After_1.mp4', poster: '/videos/After_1-thumbnail.jpg' },
 ];
 
 export const SOFTWARE_SKILLS: SoftwareSkill[] = [
@@ -81,5 +95,5 @@ export const SERVICE_TIERS: ServiceTier[] = [
   { id: 'long-standard', title: 'LONG FORM — STANDARD', category: 'LONG FORM', tier: 'STANDARD', description: 'Clean, engaging long-form editing for YouTube, commentary, gaming, and educational content.', deliverables: ['Comprehensive story trimming & A-roll cut down', 'Clean audio leveling & noise reduction', 'Basic lower thirds & title overlays', 'Strategic zoom punches & retention cuts', 'Standard 1080p/4K master export'], idealFor: 'Consistent weekly YouTube uploaders & vloggers' },
   { id: 'long-premium', title: 'LONG FORM — PREMIUM', category: 'LONG FORM', tier: 'PREMIUM', description: 'Cinematic documentary-style YouTube editing with heavy motion graphics & custom sound design.', deliverables: ['Advanced narrative structuring & retention optimization', 'Custom After Effects motion callouts & kinetic typography', 'Bespoke sound design & multi-layer audio mixing', 'Professional Rec.709 / Film emulation color grading', 'Optimized thumbnail asset kit & vertical promo cut'], idealFor: 'High-stakes documentaries, flagship YouTube projects & brand campaigns', popular: true },
   { id: 'short-standard', title: 'SHORT FORM — STANDARD', category: 'SHORT FORM', tier: 'STANDARD', description: 'Fast-turnaround 9:16 vertical videos for Instagram Reels, YouTube Shorts, and TikTok.', deliverables: ['Attention-grabbing hook cutting within 3 seconds', 'Automated kinetic captions with highlight styling', 'Dynamic crop & auto-framing for vertical', 'Background music track integration', 'Vertical 1080x1920 master export'], idealFor: 'Content creators repurposing podcast clips & long-form highlights' },
-  { id: 'short-premium', title: 'SHORT FORM — PREMIUM', category: 'SHORT FORM', tier: 'PREMIUM', description: 'High-energy, algorithm-topping short form with bespoke motion treatment and sound layering.', deliverables: ['Hand-crafted frame-by-frame text animation', 'Custom sound effects (whooshes, pops, impacts)', 'Subtle motion graphic overlays & emoji callouts', 'Speed ramps & rhythm-synced beats', 'AB testing variation cuts'], idealFor: 'Brands & creators seeking viral reach and max conversion on mobile', popular: true },
+  { id: 'short-premium', title: 'SHORT FORM — PREMIUM', category: 'SHORT FORM', tier: 'PREMIUM', description: 'High-energy, algorithm-topping short form with bespoke motion treatment and sound layering.', deliverables: ['Hand-crafted frame-by-frame text animation', 'Custom sound effects (whooshes, pops, impacts)', 'Subtle motion graphic overlays & emoji callouts', 'Speed ramps & rhythm-synced beats', 'A/B testing variation cuts'], idealFor: 'Brands & creators seeking viral reach and max conversion on mobile', popular: true },
 ];

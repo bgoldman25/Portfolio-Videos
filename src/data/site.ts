@@ -12,9 +12,10 @@ export const SITE = {
   bookingEmbedUrl: import.meta.env.VITE_BOOKING_EMBED_URL || "",
   formspreeId: import.meta.env.VITE_FORMSPREE_ID || "YOUR_FORMSPREE_ID_HERE",
   showreel: {
-    youtubeId: "eRsGy_F2vJw", // Sintel — placeholder, replace with your showreel ID
+    src: "/videos/showreel-2026.mp4",
     title: "Showreel // 2026",
-    poster: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=75",
+    duration: "0:28",
+    poster: "/videos/showreel-2026-poster.jpg",
   },
   socials: [
     { label: "YouTube", url: "https://youtube.com/@baltazargoldman" },

@@ -34,13 +34,27 @@ yarn-error.log*
 # Test coverage
 coverage/
 
-# Large media files (hosted on GitHub Releases)
+# Large media files (full masters hosted on GitHub Releases)
 public/videos/*.mp4
 public/videos/*.mov
 public/videos/*.avi
 public/videos/*.wav
 public/videos/*.txt
 public/videos/*.jpg
+
+# Keep portfolio presentation assets (reel, previews, thumbnails, comparison clips)
+!public/videos/showreel-2026.mp4
+!public/videos/reel-0*.mp4
+!public/videos/source-shift-loop.mp4
+!public/videos/Before_1.mp4
+!public/videos/After_1.mp4
+!public/videos/*-thumbnail.jpg
+!public/videos/*-thumbnail-*.jpg
+!public/videos/*-frame-*.jpg
+!public/videos/showreel-2026-poster.jpg
+
+# Local dev logs + QA scaffolds (not part of the product)
+.dev-logs/
 
 # Misc
 *.md

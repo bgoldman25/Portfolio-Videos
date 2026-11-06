@@ -1,98 +1,159 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Sliders, Sparkles, Play, Pause } from 'lucide-react';
+import { Sliders, Sparkles, Play, Pause, RotateCcw } from 'lucide-react';
+
+const RELEASE = 'https://github.com/bgoldman25/Portfolio-Videos/releases/download/videos-v1';
+const RAW_CANDIDATES = ['/videos/Before_1.mp4', `${RELEASE}/Before_1.mp4`];
+const FINAL_CANDIDATES = ['/videos/After_1.mp4', `${RELEASE}/After_1.mp4`];
 
 export const RawVsEdited: React.FC = () => {
-  const CDN_SRC = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
-  const RAW_CANDIDATES = ['/videos/Before_1.mp4', CDN_SRC];
-  const FINAL_CANDIDATES = ['/videos/After_1.mp4', CDN_SRC];
-
   const [pos, setPos] = useState(50);
   const [dragging, setDragging] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [time, setTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [rawIdx, setRawIdx] = useState(0);
   const [finalIdx, setFinalIdx] = useState(0);
   const rawSrc = RAW_CANDIDATES[rawIdx];
   const finalSrc = FINAL_CANDIDATES[finalIdx];
 
   const handleRawError = useCallback(() => {
-    if (rawIdx < RAW_CANDIDATES.length - 1) {
-      setRawIdx((i) => Math.min(i + 1, RAW_CANDIDATES.length - 1));
-    } else {
-      setVideoError(true);
-    }
+    if (rawIdx < RAW_CANDIDATES.length - 1) setRawIdx((i) => Math.min(i + 1, RAW_CANDIDATES.length - 1));
+    else setVideoError(true);
   }, [rawIdx]);
 
   const handleFinalError = useCallback(() => {
-    if (finalIdx < FINAL_CANDIDATES.length - 1) {
-      setFinalIdx((i) => Math.min(i + 1, FINAL_CANDIDATES.length - 1));
-    } else {
-      setVideoError(true);
-    }
+    if (finalIdx < FINAL_CANDIDATES.length - 1) setFinalIdx((i) => Math.min(i + 1, FINAL_CANDIDATES.length - 1));
+    else setVideoError(true);
   }, [finalIdx]);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const rawRef = useRef<HTMLVideoElement>(null);
   const finalRef = useRef<HTMLVideoElement>(null);
 
   const sync = useCallback(() => {
     const r = rawRef.current, f = finalRef.current;
-    if (r && f && !r.paused && !f.paused && Math.abs(r.currentTime - f.currentTime) > 0.12) f.currentTime = r.currentTime;
+    if (!r || !f) return;
+    setTime(r.currentTime);
+    if (!r.paused && !f.paused && Math.abs(r.currentTime - f.currentTime) > 0.12) {
+      try { f.currentTime = r.currentTime; } catch { /* noop */ }
+    }
   }, []);
 
-  useEffect(() => { if (!playing) return; const id = window.setInterval(sync, 60); return () => clearInterval(id); }, [playing, sync]);
+  useEffect(() => {
+    if (!playing) return;
+    const id = window.setInterval(sync, 80);
+    return () => window.clearInterval(id);
+  }, [playing, sync]);
 
   const toggle = () => {
     const r = rawRef.current, f = finalRef.current;
     if (!r || !f) return;
-    if (playing) { r.pause(); f.pause(); setPlaying(false); }
-    else { r.play().catch(() => {}); f.play().catch(() => {}); setPlaying(true); }
+    if (playing) {
+      r.pause(); f.pause(); setPlaying(false);
+    } else {
+      const start = Math.max(0, Math.min(r.duration || 0, time || 0));
+      try { r.currentTime = start; f.currentTime = start; } catch { /* noop */ }
+      const playRaw = r.play().then(() => true).catch(() => false);
+      const playFinal = f.play().then(() => true).catch(() => false);
+      Promise.all([playRaw, playFinal]).then(([rawStarted, finalStarted]) => setPlaying(rawStarted || finalStarted));
+    }
+  };
+
+  const reset = () => {
+    const r = rawRef.current, f = finalRef.current;
+    if (!r || !f) return;
+    r.pause(); f.pause(); setPlaying(false);
+    try { r.currentTime = 0; f.currentTime = 0; } catch { /* noop */ }
+    setPos(50);
+    setTime(0);
   };
 
   const move = useCallback((clientX: number) => {
-    const el = containerRef.current; if (!el) return;
+    const el = containerRef.current;
+    if (!el) return;
     const rect = el.getBoundingClientRect();
-    let pct = ((clientX - rect.left) / rect.width) * 100;
+    const pct = ((clientX - rect.left) / rect.width) * 100;
     setPos(Math.min(98, Math.max(2, pct)));
   }, []);
 
   useEffect(() => {
-    const mm = (e: MouseEvent) => { if (dragging) move(e.clientX); };
+    if (!dragging) return;
+    const mm = (e: PointerEvent) => move(e.clientX);
     const mu = () => setDragging(false);
-    if (dragging) { window.addEventListener('mousemove', mm); window.addEventListener('mouseup', mu); }
-    return () => { window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
+    window.addEventListener('pointermove', mm);
+    window.addEventListener('pointerup', mu);
+    window.addEventListener('pointercancel', mu);
+    return () => {
+      window.removeEventListener('pointermove', mm);
+      window.removeEventListener('pointerup', mu);
+      window.removeEventListener('pointercancel', mu);
+    };
   }, [dragging, move]);
 
   return (
-    <section className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-y border-white/10">
+    <section id="raw-vs-edited" className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-y border-white/10 scroll-mt-20">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-acid/10 border border-acid/30 text-acid font-mono text-xs rounded-full mb-3"><Sliders className="w-3.5 h-3.5" /> INTERACTIVE BEFORE / AFTER</div>
           <h2 className="font-display font-black text-4xl md:text-6xl uppercase tracking-tight">Raw vs <span className="text-acid">final edit</span></h2>
-          <p className="text-muted text-sm font-mono mt-3">DRAG THE PLAYHEAD · TAP PLAY TO SYNC BOTH CLIPS</p>
+          <p className="text-muted text-sm font-mono mt-3">DRAG THE PLAYHEAD · PLAY BOTH CLIPS IN SYNC · SAME TAKE, FULL GRADE</p>
         </div>
-        <div ref={containerRef} onMouseDown={(e) => { setDragging(true); move(e.clientX); }} onTouchMove={(e) => move(e.touches[0].clientX)} className="relative aspect-video w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-white/15 bg-black cursor-ew-resize select-none shadow-2xl" role="slider" aria-label="Before and after comparison" aria-valuenow={Math.round(pos)} aria-valuemin={0} aria-valuemax={100} tabIndex={0} onKeyDown={(e) => { if (e.key === 'ArrowLeft') setPos((p) => Math.max(2, p - 4)); if (e.key === 'ArrowRight') setPos((p) => Math.min(98, p + 4)); }}>
-          <video ref={finalRef} src={finalSrc} poster="/videos/After_1-thumbnail.jpg" loop muted playsInline preload="metadata" onError={handleFinalError} className="absolute inset-0 w-full h-full object-cover contrast-125 saturate-125" />
+        <div className="relative max-w-5xl mx-auto">
+        <div
+          ref={containerRef}
+          onPointerDown={(e) => {
+            if ((e.target as HTMLElement).closest('button, a, input, [role="button"]')) return;
+            setDragging(true);
+            move(e.clientX);
+          }}
+          onPointerMove={(e) => { if (dragging) move(e.clientX); }}
+          className="relative aspect-video w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-white/40 bg-black cursor-ew-resize select-none touch-none shadow-2xl"
+          role="slider"
+          aria-label="Before and after comparison"
+          aria-valuenow={Math.round(pos)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuetext={`${Math.round(pos)} percent raw footage, ${time.toFixed(1)} seconds`}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowLeft') { e.preventDefault(); setPos((p) => Math.max(2, p - 4)); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); setPos((p) => Math.min(98, p + 4)); }
+            if (e.key === 'Home') { e.preventDefault(); setPos(2); }
+            if (e.key === 'End') { e.preventDefault(); setPos(98); }
+            if (e.key === ' ') { e.preventDefault(); toggle(); }
+          }}
+        >
+          <video ref={finalRef} src={finalSrc} poster="/videos/After_1-thumbnail.jpg" aria-hidden="true" tabIndex={-1} loop muted playsInline preload="metadata" onError={handleFinalError} onTimeUpdate={() => { if (finalRef.current) setTime(finalRef.current.currentTime); }} className="absolute inset-0 w-full h-full object-cover contrast-125 saturate-125" />
           <div className="absolute top-4 right-4 bg-acid text-black font-mono text-xs font-black px-3 py-1 rounded">FINAL — GRADED</div>
           <div className="absolute bottom-14 right-4 bg-black/85 border border-acid/50 text-acid px-3 py-1.5 font-mono text-xs rounded hidden sm:flex items-center gap-2"><Sparkles className="w-3.5 h-3.5" /> REC.709 · KINETIC TYPE</div>
           <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-            <video ref={rawRef} src={rawSrc} poster="/videos/Before_1-thumbnail.jpg" loop muted playsInline preload="metadata" onError={handleRawError} className="absolute inset-0 w-full h-full object-cover brightness-90 saturate-50" />
+            <video ref={rawRef} src={rawSrc} poster="/videos/Before_1-thumbnail.jpg" aria-hidden="true" tabIndex={-1} loop muted playsInline preload="metadata" onLoadedMetadata={() => { if (rawRef.current?.duration) setDuration(rawRef.current.duration); }} onError={handleRawError} className="absolute inset-0 w-full h-full object-cover brightness-90 saturate-50" />
             <div className="absolute inset-0 bg-emerald-950/25" />
-            <div className="absolute top-4 left-4 bg-black/85 border border-white/20 text-muted font-mono text-xs px-3 py-1 rounded">RAW — LOG · UNMIXED</div>
-            <div className="absolute bottom-10 left-4 bg-black/80 text-muted font-mono text-xs p-2 rounded border border-white/10 hidden sm:block">ROOM AUDIO · NO MOTION</div>
           </div>
           <div style={{ left: `${pos}%` }} className="absolute inset-y-0 -ml-px w-0.5 bg-acid shadow-[0_0_18px_rgba(183,255,0,0.8)]">
             <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-acid text-black grid place-items-center border-2 border-white shadow-xl"><Sliders className="w-5 h-5" /></div>
           </div>
+          {/* Raw-side annotations sit above the draggable playhead: the clipped layer's
+              clip-path creates a stacking context, so they cannot out-rank it from inside. */}
+          <div style={{ opacity: pos > 20 ? 1 : 0 }} className="pointer-events-none absolute top-4 left-4 z-20 bg-black border border-white/40 text-white/90 font-mono text-xs px-3 py-1 rounded transition-opacity duration-200">RAW — LOG · UNMIXED</div>
+          <div style={{ opacity: pos > 30 ? 1 : 0 }} className="pointer-events-none absolute bottom-10 left-4 z-20 bg-black text-white/90 font-mono text-xs p-2 rounded border border-white/40 hidden sm:block transition-opacity duration-200">ROOM AUDIO · NO MOTION</div>
           {videoError && (
             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/85 border border-white/20 text-white font-mono text-xs px-3 py-1.5 rounded z-10">
               Video unavailable — please check your connection.
             </div>
           )}
-          <button onClick={(e) => { e.stopPropagation(); toggle(); }} aria-label={playing ? 'Pause comparison' : 'Play comparison'} className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/80 border border-white/20 rounded-full px-4 py-2 text-xs font-mono text-white hover:text-acid">
+        </div>
+          {/* Controls live beside the slider, not inside it: role="slider" must not wrap buttons. */}
+          <button onClick={toggle} aria-label={playing ? 'Pause comparison' : 'Play both comparison clips'} className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-black/80 border border-white/40 rounded-full px-4 py-2.5 text-xs font-mono text-white hover:text-acid">
             {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />} {playing ? 'PAUSE' : 'PLAY BOTH'}
           </button>
+          <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2">
+            <span className="bg-black/80 border border-white/15 rounded-full px-3 py-2 text-[11px] font-mono text-white/80">{time.toFixed(1)}{duration ? ` / ${duration.toFixed(1)}` : ''}s</span>
+            <button onClick={reset} aria-label="Reset comparison" className="p-2 min-w-[40px] min-h-[40px] grid place-items-center rounded-full bg-black/80 border border-white/40 text-white hover:text-acid"><RotateCcw className="w-4 h-4" /></button>
+          </div>
         </div>
-        
+        <p className="text-center text-xs font-mono text-muted mt-4">Left: ungraded source + room audio · Right: final grade, motion callouts & mix</p>
       </div>
     </section>
   );

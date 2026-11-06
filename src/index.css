@@ -21,5 +21,7 @@
 .animate-marquee { animation: marquee 28s linear infinite; }
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee, .animate-pulse { animation: none !important; }
-  html { scroll-behavior: auto; }
+  /* index.html carries Tailwind's .scroll-smooth, whose class specificity beats a plain
+     `html` rule, so the reduced-motion reset has to out-specify it (and stay !important). */
+  html, html.scroll-smooth, .scroll-smooth { scroll-behavior: auto !important; }
 }

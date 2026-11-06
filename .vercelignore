@@ -1,10 +1,15 @@
-# Ignore large video files
+# Ignore large source video files, keep small presentation assets
 public/videos/*.mp4
 public/videos/*.mov
 public/videos/*.avi
 public/videos/*.wav
 public/videos/*.txt
-# public/videos/*.jpg  -- keep thumbnails
+!public/videos/showreel-2026.mp4
+!public/videos/reel-0*.mp4
+!public/videos/source-shift-loop.mp4
+!public/videos/Before_1.mp4
+!public/videos/After_1.mp4
+# public/videos/*.jpg  -- keep thumbnails and frame galleries
 
 # Ignore dist folder
 dist/

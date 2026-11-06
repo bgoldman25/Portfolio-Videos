@@ -30,6 +30,7 @@ export interface Project {
   durationLabel?: string;
   rawVideo?: string;
   finalVideo?: string;
+  gallery?: { src: string; label: string }[];
   metrics: EditingMetrics;
   featured?: boolean;
 }

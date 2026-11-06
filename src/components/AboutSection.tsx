@@ -1,16 +1,28 @@
 import React from 'react';
 import { Sparkles, Flame, Zap, Video, Calendar, Clock } from 'lucide-react';
 import { SITE } from '../data/site';
+import { usePrefersReducedMotion } from '../utils/performance';
 
-export const AboutSection: React.FC = () => (
-  <section id="about" scroll-mt-20 className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-t border-white/10 overflow-hidden">
+export const AboutSection: React.FC = () => {
+  const reduceMotion = usePrefersReducedMotion();
+  return <AboutContent reduceMotion={reduceMotion} />;
+};
+
+const AboutContent: React.FC<{ reduceMotion: boolean }> = ({ reduceMotion }) => (
+  <section id="about" className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-t border-white/10 overflow-hidden scroll-mt-20">
     <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 items-center">
       <div className="lg:col-span-5 relative">
         <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-white/15 bg-black group">
           <img src="/images/profilepicture.jpg" alt="Portrait of Baltazar Goldman, freelance video editor" width={800} height={1000} decoding="async" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
           <span className="absolute top-4 left-4 bg-acid text-black font-mono font-bold text-xs px-3 py-1 rounded">Baltazar Goldman</span>
-          <div className="absolute bottom-5 left-5 right-5 font-mono text-xs space-y-1"><div className="text-acid font-bold">[ FREELANCE EDITOR ]</div><div className="text-white/60">REMOTE / WORLDWIDE · {SITE.timezone}</div></div>
+          <div className="absolute bottom-20 right-4 w-[46%] rounded-lg overflow-hidden border border-acid/50 bg-black shadow-2xl">
+            <video src="/videos/source-shift-loop.mp4" autoPlay={!reduceMotion} loop muted playsInline preload="metadata" aria-label="Source footage from the Source Shift masterclass" className="aspect-video w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
+            <span className="absolute top-1.5 left-1.5 bg-black text-acid font-mono text-[10px] leading-none px-2 py-1 rounded">● SOURCE</span>
+            <span className="absolute bottom-1.5 left-1.5 font-mono text-[10px] text-white/90 bg-black/85 px-1.5 py-0.5 rounded">TALKING HEAD // 6s LOOP</span>
+          </div>
+          <div className="absolute bottom-5 left-5 right-5 font-mono text-xs space-y-1"><div className="text-acid font-bold">[ FREELANCE EDITOR ]</div><div className="text-white/90">REMOTE / WORLDWIDE · {SITE.timezone}</div></div>
         </div>
       </div>
       <div className="lg:col-span-7">
