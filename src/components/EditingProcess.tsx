@@ -25,7 +25,7 @@ export const EditingProcess: React.FC = () => {
         <AnimatePresence mode="wait">
           <motion.div key={step.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.3 }} className="grid lg:grid-cols-12 gap-6 bg-charcoal border border-white/10 rounded-2xl p-5 md:p-7 items-center">
             <div className="lg:col-span-7 relative aspect-video rounded-xl overflow-hidden bg-black border border-white/10">
-              <video key={step.id} src={step.videoUrl} poster={step.poster} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+              <video key={step.id} src={step.videoUrl} poster={step.poster} autoPlay loop muted playsInline preload="metadata" aria-label={step.name} className="w-full h-full object-cover" />
               <div className="absolute top-3 left-3 bg-black/85 border border-acid/50 text-acid font-mono text-xs px-2.5 py-1 rounded">REC ● {step.name}</div>
               <div className="absolute bottom-3 right-3 bg-black/85 font-mono text-xs px-2.5 py-1 rounded">{step.timecode}</div>
             </div>

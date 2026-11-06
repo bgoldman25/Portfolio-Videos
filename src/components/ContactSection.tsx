@@ -43,7 +43,7 @@ export const ContactSection: React.FC = () => {
           <h2 className="font-display font-black text-5xl md:text-7xl uppercase tracking-tight">Let's make <span className="text-acid">something.</span></h2>
           <p className="text-muted font-mono text-sm mt-3">Raw footage, a channel, or a campaign — send the brief. I reply inside 24h with next steps.</p>
         </div>
-        <div className="bg-charcoal border border-white/12 rounded-2xl p-6 md:p-8 shadow-2xl">
+        <div className="bg-charcoal border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl">
           <AnimatePresence mode="wait">
             {status === 'sent' ? (
               <motion.div key="sent" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="py-10 text-center space-y-4">
@@ -55,18 +55,18 @@ export const ContactSection: React.FC = () => {
             ) : (
               <motion.form key="form" initial={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Name *</span><input value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Alex Rivera" className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl focus:border-acid outline-none text-sm" autoComplete="name" /></label>
-                  <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Email *</span><input type="email" value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="alex@creator.com" className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl focus:border-acid outline-none text-sm" autoComplete="email" /></label>
+                  <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Name *</span><input required maxLength={80} value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Alex Rivera" className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl focus:border-acid outline-none text-sm" autoComplete="name" /></label>
+                  <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Email *</span><input type="email" required maxLength={120} value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="alex@creator.com" className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl focus:border-acid outline-none text-sm" autoComplete="email" /></label>
                 </div>
                 <div className="grid sm:grid-cols-3 gap-5">
                   <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Service</span><select value={form.service} onChange={(e) => set('service', e.target.value)} className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl text-sm focus:border-acid outline-none">{SERVICE_OPTIONS.map((o) => <option key={o}>{o}</option>)}</select></label>
                   <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Timeline</span><select value={form.timeline} onChange={(e) => set('timeline', e.target.value)} className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl text-sm focus:border-acid outline-none">{TIMELINES.map((o) => <option key={o}>{o}</option>)}</select></label>
                   <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Budget</span><select value={form.budget} onChange={(e) => set('budget', e.target.value)} className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl text-sm focus:border-acid outline-none">{BUDGETS.map((o) => <option key={o}>{o}</option>)}</select></label>
                 </div>
-                <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Project brief *</span><textarea rows={4} value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="Video goal, raw footage length, audience, turnaround…" className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl focus:border-acid outline-none text-sm" /><span className="block text-xs font-mono text-muted">{form.description.length} / 20 min characters</span></label>
+                <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Project brief *</span><textarea rows={4} required minLength={20} maxLength={2000} value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="Video goal, raw footage length, audience, turnaround…" className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl focus:border-acid outline-none text-sm" /><span className="block text-xs font-mono text-muted">{form.description.length} / 20 min characters</span></label>
                 <label className="space-y-2 block"><span className="font-mono text-xs text-acid uppercase">Reference edit (optional)</span><input value={form.referenceUrls} onChange={(e) => set('referenceUrls', e.target.value)} placeholder="https://youtube.com/watch?v=…" className="w-full px-4 py-3 bg-dark border border-white/10 rounded-xl focus:border-acid outline-none text-sm" /></label>
-                <input type="text" value={form.honeypot} onChange={(e) => set('honeypot', e.target.value)} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-                {error && <p className="flex items-center gap-2 text-sm text-red-400 font-mono"><AlertCircle className="w-4 h-4" />{error}</p>}
+                <input type="text" value={form.honeypot} onChange={(e) => set('honeypot', e.target.value)} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" name="website" />
+                {error && <p role="alert" className="flex items-center gap-2 text-sm text-red-400 font-mono"><AlertCircle className="w-4 h-4" />{error}</p>}
                 <button type="submit" disabled={status === 'sending'} className="w-full py-4 bg-acid text-black font-display font-black text-base tracking-wide rounded-xl uppercase hover:bg-white transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {status === 'sending' ? 'SENDING BRIEF…' : 'Send project brief'} <Send className="w-4 h-4" />
                 </button>

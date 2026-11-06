@@ -32,7 +32,7 @@ export const Hero: React.FC = () => (
         </div>
       </motion.div>
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }} className="mt-10">
-        <div className="flex items-center justify-between font-mono text-xs text-muted mb-3"><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />SHOWREEL // 2026 — TAP TO PLAY</span><span className="hidden sm:inline">REPLACE WITH YOUR YOUTUBE ID IN site.ts</span></div>
+        <div className="flex items-center justify-between font-mono text-xs text-muted mb-3"><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />SHOWREEL // 2026 — TAP TO PLAY</span><span className="hidden sm:inline">SOUND ON FOR BEST EXPERIENCE</span></div>
         <VideoPlayer youtubeId={SITE.showreel.youtubeId} poster={SITE.showreel.poster} title={SITE.showreel.title} rounded="rounded-2xl" />
       </motion.div>
     </div>

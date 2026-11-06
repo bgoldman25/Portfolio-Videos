@@ -11,7 +11,7 @@ const FRAMES = [
 export const ColdOpen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [stage, setStage] = useState<'waiting' | 'cuts' | 'title' | 'done'>('waiting');
   const [idx, setIdx] = useState(0);
-  const complete = useCallback(() => { setStage('done'); sessionStorage.setItem('coldopen-seen', '1'); onComplete(); }, [onComplete]);
+  const complete = useCallback(() => { setStage('done'); try { sessionStorage.setItem('coldopen-seen', '1'); } catch {} onComplete(); }, [onComplete]);
   const skip = useCallback(() => { soundEngine.playCutSound(); complete(); }, [complete]);
 
   useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') skip(); }; window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [skip]);
@@ -38,7 +38,7 @@ export const ColdOpen: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           )}
           {stage === 'cuts' && (
             <div className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden border border-white/10">
-              <img src={FRAMES[idx].url} alt={FRAMES[idx].type} className="absolute inset-0 w-full h-full object-cover opacity-70 grayscale contrast-125" />
+              <img src={FRAMES[idx].url} alt="" className="absolute inset-0 w-full h-full object-cover opacity-70 grayscale contrast-125" decoding="async" />
               <div className="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-dark/70" />
               <div className="absolute top-4 left-4 font-mono text-xs text-acid bg-black/70 border border-acid/40 px-3 py-1 rounded">REC ● {FRAMES[idx].type}</div>
               <motion.div key={idx} initial={{ scale: 1.25, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.12 }} className="absolute inset-0 grid place-items-center font-display font-black text-7xl md:text-9xl tracking-tighter text-acid drop-shadow-[0_0_35px_rgba(183,255,0,0.6)]">{FRAMES[idx].word}</motion.div>
@@ -47,7 +47,7 @@ export const ColdOpen: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
           {stage === 'title' && (
             <div className="text-center">
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="font-mono text-xs text-acid mb-4">SEQUENCE READY</motion.div>
-              <motion.h1 initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className="font-display font-black text-6xl md:text-8xl uppercase leading-none">Baltazar<br /><span className="text-acid">Goldman</span></motion.h1>
+              <motion.div initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className="font-display font-black text-6xl md:text-8xl uppercase leading-none">Baltazar<br /><span className="text-acid">Goldman</span></motion.div>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="font-mono text-sm text-muted mt-4">CUTTING STORIES. BUILDING MOMENTUM.</motion.p>
             </div>
           )}

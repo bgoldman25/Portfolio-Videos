@@ -29,7 +29,7 @@ export const SkillReveal: React.FC = () => {
               );
             })}
           </div>
-          <div className="relative bg-dark border border-white/12 rounded-2xl p-7 flex flex-col justify-between overflow-hidden min-h-[320px]">
+          <div className="relative bg-dark border border-white/10 rounded-2xl p-7 flex flex-col justify-between overflow-hidden min-h-[320px]">
             <span className="absolute -top-4 right-2 font-display font-black text-[9rem] leading-none text-white/5 select-none">{skill.percentage}%</span>
             <div>
               <div className="flex items-center gap-2 font-mono text-xs text-muted pb-4 border-b border-white/10 mb-6"><Terminal className="w-4 h-4 text-acid" />EDITING_ROOM_CONSOLE <span className="ml-auto text-acid">ACTIVE</span></div>

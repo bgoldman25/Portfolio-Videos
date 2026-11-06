@@ -7,7 +7,7 @@ export const AboutSection: React.FC = () => (
     <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 items-center">
       <div className="lg:col-span-5 relative">
         <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-white/15 bg-black group">
-          <img src="/images/profilepicture.jpg" alt="Portrait of Baltazar Goldman, freelance video editor" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700" loading="lazy" />
+          <img src="/images/profilepicture.jpg" alt="Portrait of Baltazar Goldman, freelance video editor" width={800} height={1000} decoding="async" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
           <span className="absolute top-4 left-4 bg-acid text-black font-mono font-bold text-xs px-3 py-1 rounded">Baltazar Goldman</span>
           <div className="absolute bottom-5 left-5 right-5 font-mono text-xs space-y-1"><div className="text-acid font-bold">[ FREELANCE EDITOR ]</div><div className="text-white/60">REMOTE / WORLDWIDE · {SITE.timezone}</div></div>

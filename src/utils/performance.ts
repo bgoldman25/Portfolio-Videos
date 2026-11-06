@@ -15,16 +15,13 @@ export function useLiveTimecode() {
   const [tc, setTc] = useState('00:00:00:00');
   const frameRef = useRef(0);
   useEffect(() => {
-    let raf: number; let lastSecond = -1;
-    const tick = () => {
-      const now = new Date(); const sec = now.getSeconds();
-      if (sec !== lastSecond) { lastSecond = sec; frameRef.current = 0; } else { frameRef.current = (frameRef.current + 1) % 60; }
-      const pad = (n: number) => String(n).padStart(2, '0');
-      setTc(`${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(sec)}:${pad(frameRef.current)}`);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const id = window.setInterval(() => {
+      const now = new Date();
+      frameRef.current = (frameRef.current + 15) % 60;
+      setTc(`${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}:${pad(frameRef.current)}`);
+    }, 250);
+    return () => window.clearInterval(id);
   }, []);
   return tc;
 }

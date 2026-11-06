@@ -32,12 +32,12 @@ export const Navigation: React.FC<{ onReplayIntro?: () => void }> = ({ onReplayI
         </nav>
         <div className="flex items-center gap-2">
           <a href="#book" className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-acid text-black text-xs font-bold hover:bg-white transition-colors"><Calendar className="w-3.5 h-3.5" />Book call</a>
-          <button onClick={toggle} aria-label="Toggle sound" className="p-2 rounded-full border border-white/15 text-muted hover:text-acid hover:border-acid">{audio ? <Volume2 className="w-4 h-4 text-acid" /> : <VolumeX className="w-4 h-4" />}</button>
+          <button onClick={toggle} aria-label="Toggle sound" aria-pressed={audio} className="p-2 rounded-full border border-white/15 text-muted hover:text-acid hover:border-acid">{audio ? <Volume2 className="w-4 h-4 text-acid" /> : <VolumeX className="w-4 h-4" />}</button>
           {onReplayIntro && <button onClick={onReplayIntro} className="hidden md:inline text-xs font-mono text-muted hover:text-acid">REPLAY INTRO</button>}
-          <button onClick={() => setOpen(!open)} aria-label="Menu" className="md:hidden p-2 rounded border border-white/15">{open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button>
+          <button onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open} aria-controls="mobile-nav" className="md:hidden p-2 rounded border border-white/15">{open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button>
         </div>
       </div>
-      {open && <nav className="md:hidden border-t border-white/10 bg-dark/95 px-4 py-4 flex flex-col gap-1 text-sm font-mono">{LINKS.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="py-2.5 border-b border-white/5 last:border-0">{l.n} — {l.label}</a>)}<a href="#book" onClick={() => setOpen(false)} className="py-3 text-acid font-bold">Book a discovery call →</a></nav>}
+      {open && <nav id="mobile-nav" aria-label="Mobile" className="md:hidden border-t border-white/10 bg-dark/95 px-4 py-4 flex flex-col gap-1 text-sm font-mono">{LINKS.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="py-2.5 border-b border-white/5 last:border-0">{l.n} — {l.label}</a>)}<a href="#book" onClick={() => setOpen(false)} className="py-3 text-acid font-bold">Book a discovery call →</a></nav>}
     </header>
   );
 };

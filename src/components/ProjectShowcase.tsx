@@ -20,19 +20,19 @@ export const ProjectShowcase: React.FC<{ onSelectProject: (p: Project) => void }
           <div>
             <div className="font-mono text-xs text-acid mb-2">[ 01 // SELECTED WORK ]</div>
             <h2 className="font-display font-black text-5xl md:text-7xl uppercase tracking-tight">Featured <span className="text-acid">edits</span></h2>
-            <p className="text-muted mt-3 max-w-xl">Three recent sequences — hover to preview, click for full breakdown. Each card links to the complete playthrough.</p>
+            <p className="text-muted mt-3 max-w-xl">Three recent sequences — click any card for the full breakdown and playthrough.</p>
           </div>
           <div className="flex flex-wrap gap-2 font-mono text-xs">
-            {FILTERS.map((f) => <button key={f} onClick={() => setFilter(f)} className={`px-3.5 py-2 rounded-full border transition-colors ${filter === f ? 'bg-acid text-black border-acid font-bold' : 'border-white/15 text-muted hover:text-white hover:border-white/40'}`}>{f}</button>)}
+            {FILTERS.map((f) => <button key={f} onClick={() => setFilter(f)} aria-pressed={filter === f} className={`px-3.5 py-2 rounded-full border transition-colors ${filter === f ? 'bg-acid text-black border-acid font-bold' : 'border-white/15 text-muted hover:text-white hover:border-white/40'}`}>{f}</button>)}
           </div>
         </div>
         <motion.div layout className="grid md:grid-cols-2 gap-5">
           <AnimatePresence mode="popLayout">
             {filtered.map((project, idx) => (
               <motion.article layout key={project.id} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.45, delay: idx * 0.08 }}
-                onClick={() => onSelectProject(project)} className={`group cursor-pointer rounded-2xl overflow-hidden bg-charcoal border border-white/10 hover:border-acid/50 transition-colors ${idx === 0 && filter === 'ALL' ? 'md:col-span-2' : ''}`}>
+                role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectProject(project); } }} onClick={() => onSelectProject(project)} className={`group cursor-pointer rounded-2xl overflow-hidden bg-charcoal border border-white/10 hover:border-acid/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid transition-colors ${idx === 0 && filter === 'ALL' ? 'md:col-span-2' : ''}`}>
                 <div className={`relative overflow-hidden ${project.type === 'short-form' ? 'aspect-[4/3] md:aspect-video' : 'aspect-video'}`}>
-                  <img src={project.thumbnail} alt={project.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+                  <img src={project.thumbnail} alt={project.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
                   <div className="absolute top-4 left-4 flex gap-2 font-mono text-[11px]">
                     <span className="px-2.5 py-1 rounded bg-black/70 border border-white/15 text-acid">{project.category}</span>

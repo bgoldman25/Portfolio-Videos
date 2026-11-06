@@ -8,7 +8,7 @@ export const Footer: React.FC = () => (
       <div className="flex flex-col lg:flex-row justify-between gap-10 pb-10 border-b border-white/10">
         <div className="max-w-md">
           <div className="flex items-center gap-2 text-acid mb-3"><Radio className="w-4 h-4 animate-pulse" /><span>SEQUENCE COMPLETE</span></div>
-          <div className="font-display font-black text-4xl md:text-5xl text-white uppercase tracking-tight">Baltazar<br /><span className="text-acid">Goldman</span></div>
+          <h2 className="font-display font-black text-4xl md:text-5xl text-white uppercase tracking-tight">Baltazar<br /><span className="text-acid">Goldman</span></h2>
           <p className="mt-3 leading-relaxed">Freelance video editor — retention-first YouTube, gaming, talking-head & short-form. {SITE.availability.label}. Reply {SITE.responseTime}.</p>
           <div className="flex flex-wrap gap-2 mt-5">{SITE.socials.map((s) => <a key={s.label} href={s.url} target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded-full border border-white/15 hover:border-acid hover:text-acid transition-colors">{s.label} ↗</a>)}</div>
         </div>

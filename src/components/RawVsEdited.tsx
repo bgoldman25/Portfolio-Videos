@@ -5,6 +5,7 @@ export const RawVsEdited: React.FC = () => {
   const [pos, setPos] = useState(50);
   const [dragging, setDragging] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rawRef = useRef<HTMLVideoElement>(null);
   const finalRef = useRef<HTMLVideoElement>(null);
@@ -38,7 +39,7 @@ export const RawVsEdited: React.FC = () => {
   }, [dragging, move]);
 
   const finalSrc = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
-  const rawSrc = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4';
+  const rawSrc = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'; // same clip, grade difference via CSS — swap with your Before/After pair
 
   return (
     <section className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-y border-white/10">
@@ -49,11 +50,11 @@ export const RawVsEdited: React.FC = () => {
           <p className="text-muted text-sm font-mono mt-3">DRAG THE PLAYHEAD · TAP PLAY TO SYNC BOTH CLIPS</p>
         </div>
         <div ref={containerRef} onMouseDown={(e) => { setDragging(true); move(e.clientX); }} onTouchMove={(e) => move(e.touches[0].clientX)} className="relative aspect-video w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-white/15 bg-black cursor-ew-resize select-none shadow-2xl" role="slider" aria-label="Before and after comparison" aria-valuenow={Math.round(pos)} aria-valuemin={0} aria-valuemax={100} tabIndex={0} onKeyDown={(e) => { if (e.key === 'ArrowLeft') setPos((p) => Math.max(2, p - 4)); if (e.key === 'ArrowRight') setPos((p) => Math.min(98, p + 4)); }}>
-          <video ref={finalRef} src={finalSrc} loop muted playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover contrast-125 saturate-125" />
+          <video ref={finalRef} src={finalSrc} loop muted playsInline preload="metadata" onError={() => setVideoError(true)} className="absolute inset-0 w-full h-full object-cover contrast-125 saturate-125" />
           <div className="absolute top-4 right-4 bg-acid text-black font-mono text-xs font-black px-3 py-1 rounded">FINAL — GRADED</div>
           <div className="absolute bottom-14 right-4 bg-black/85 border border-acid/50 text-acid px-3 py-1.5 font-mono text-xs rounded hidden sm:flex items-center gap-2"><Sparkles className="w-3.5 h-3.5" /> REC.709 · KINETIC TYPE</div>
           <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-            <video ref={rawRef} src={rawSrc} loop muted playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover brightness-90 saturate-50" />
+            <video ref={rawRef} src={rawSrc} loop muted playsInline preload="metadata" onError={() => setVideoError(true)} className="absolute inset-0 w-full h-full object-cover brightness-90 saturate-50" />
             <div className="absolute inset-0 bg-emerald-950/25" />
             <div className="absolute top-4 left-4 bg-black/85 border border-white/20 text-muted font-mono text-xs px-3 py-1 rounded">RAW — LOG · UNMIXED</div>
             <div className="absolute bottom-10 left-4 bg-black/80 text-muted font-mono text-xs p-2 rounded border border-white/10 hidden sm:block">ROOM AUDIO · NO MOTION</div>
@@ -65,7 +66,7 @@ export const RawVsEdited: React.FC = () => {
             {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />} {playing ? 'PAUSE' : 'PLAY BOTH'}
           </button>
         </div>
-        <p className="text-center text-xs font-mono text-muted mt-4">Replace src in RawVsEdited.tsx with your own Before/After pair for the live reveal.</p>
+        
       </div>
     </section>
   );

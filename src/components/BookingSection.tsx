@@ -19,7 +19,7 @@ export const BookingSection: React.FC = () => {
               <p className="text-muted mt-4 leading-relaxed">A 30-minute discovery call to scope your project, timeline, and retention goals. No commitment — you'll leave with a clear edit plan whether we work together or not.</p>
               <ul className="mt-6 space-y-3 text-sm text-off-white/90">
                 {['Fit check: content type, audience & turnaround', 'Retention audit of your channel + 2 competitor edits', 'Fixed-scope quote in writing within 24h'].map((t) => (
-                  <li key={t} className="flex gap-2.5"><CheckCircle2 className="w-4.5 h-4.5 text-acid shrink-0 mt-0.5 w-5 h-5" /><span>{t}</span></li>
+                  <li key={t} className="flex gap-2.5"><CheckCircle2 className="w-5 h-5 text-acid shrink-0 mt-0.5" /><span>{t}</span></li>
                 ))}
               </ul>
               <div className="mt-6 grid grid-cols-2 gap-3 text-xs font-mono">
@@ -29,21 +29,21 @@ export const BookingSection: React.FC = () => {
               <p className="mt-4 text-xs font-mono text-muted flex items-center gap-2"><Calendar className="w-4 h-4" />Timezone: {SITE.timezone} — calendar auto-converts to your local time.</p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a href={hasRealBooking ? SITE.bookingUrl : mailto} target={hasRealBooking ? '_blank' : undefined} rel="noreferrer" className="inline-flex items-center gap-2 px-5 py-3 bg-acid text-black font-bold rounded-full hover:bg-white transition-colors"><Sparkles className="w-4 h-4" /> {hasRealBooking ? 'Open booking calendar' : 'Request call by email'} <ExternalLink className="w-4 h-4" /></a>
+              <a href={hasRealBooking ? SITE.bookingUrl : mailto} target={hasRealBooking ? '_blank' : undefined} rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-3 bg-acid text-black font-bold rounded-full hover:bg-white transition-colors"><Sparkles className="w-4 h-4" /> {hasRealBooking ? 'Open booking calendar' : 'Request call by email'} <ExternalLink className="w-4 h-4" /></a>
               <a href="#contact" className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 rounded-full font-semibold hover:border-acid hover:text-acid transition-colors">Skip to form</a>
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="lg:col-span-7 bg-dark border border-white/12 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="lg:col-span-7 bg-dark border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 font-mono text-xs"><span className="flex items-center gap-2 text-muted"><span className="w-2 h-2 rounded-full bg-acid animate-pulse" /> Google Calendar — Appointments</span><span className="text-acid">{SITE.availability.label}</span></div>
             {hasEmbed ? (
-              <iframe title="Book a discovery call" src={SITE.bookingEmbedUrl} className="w-full flex-1 min-h-[540px] bg-white" loading="lazy" />
+              <iframe title="Book a discovery call" src={SITE.bookingEmbedUrl} className="w-full flex-1 min-h-[540px] bg-white" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" />
             ) : (
               <div className="p-8 md:p-10 flex-1 flex flex-col justify-center gap-6">
                 <div className="grid sm:grid-cols-3 gap-3">
                   {['1 · Pick a time', '2 · Get Meet link', '3 · Bring your footage goal'].map((s) => <div key={s} className="p-4 rounded-xl bg-surface border border-white/10 text-sm font-medium">{s}</div>)}
                 </div>
                 <p className="text-sm text-muted leading-relaxed">The live Google Calendar scheduler embeds here once connected. Until then, use email booking — I confirm within 24h and send the Meet link.</p>
-                <p className="text-xs font-mono text-muted bg-surface border border-white/10 rounded-lg p-3">Owner setup: create an Appointment Schedule in Google Calendar → copy its URL → set <code className="text-acid">VITE_BOOKING_URL</code> and embed URL in <code className="text-acid">src/data/site.ts</code>. See <code className="text-acid">BOOKING_SETUP.md</code>.</p>
+                
               </div>
             )}
           </motion.div>
