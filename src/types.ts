@@ -7,6 +7,7 @@ export interface EditingMetrics {
   cutsCount: number;
   resolution: string;
   colorGrade: string;
+  views?: string; // optional public metric, e.g. "1.2M views"
 }
 
 export interface Project {
@@ -24,6 +25,9 @@ export interface Project {
   poster: string;
   previewVideo: string;
   fullVideo: string;
+  youtubeId?: string; // if set, player uses YouTube instead of mp4
+  vimeoId?: string;
+  durationLabel?: string;
   rawVideo?: string;
   finalVideo?: string;
   metrics: EditingMetrics;
@@ -41,6 +45,7 @@ export interface EditingProcessStep {
   visualTreatment: string;
   timecode: string;
   videoUrl: string;
+  poster?: string;
 }
 
 export interface SoftwareSkill {
@@ -60,4 +65,5 @@ export interface ServiceTier {
   description: string;
   deliverables: string[];
   idealFor: string;
+  popular?: boolean;
 }

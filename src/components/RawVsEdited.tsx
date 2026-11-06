@@ -1,225 +1,71 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Sliders, Sparkles } from 'lucide-react';
+import { Sliders, Sparkles, Play, Pause } from 'lucide-react';
 
 export const RawVsEdited: React.FC = () => {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isInView, setIsInView] = useState(false);
-  const [hasAttemptedPlay, setHasAttemptedPlay] = useState(false);
+  const [pos, setPos] = useState(50);
+  const [dragging, setDragging] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const rawVideoRef = useRef<HTMLVideoElement>(null);
-  const finalVideoRef = useRef<HTMLVideoElement>(null);
-  const syncIntervalRef = useRef<number | null>(null);
-  const playPromiseRef = useRef<Promise<void>[]>([]);
+  const rawRef = useRef<HTMLVideoElement>(null);
+  const finalRef = useRef<HTMLVideoElement>(null);
 
-  const syncVideos = useCallback(() => {
-    const raw = rawVideoRef.current;
-    const final = finalVideoRef.current;
-    if (raw && final && !raw.paused && !final.paused) {
-      if (Math.abs(raw.currentTime - final.currentTime) > 0.1) {
-        final.currentTime = raw.currentTime;
-      }
-    }
+  const sync = useCallback(() => {
+    const r = rawRef.current, f = finalRef.current;
+    if (r && f && !r.paused && !f.paused && Math.abs(r.currentTime - f.currentTime) > 0.12) f.currentTime = r.currentTime;
   }, []);
 
-  const startSync = useCallback(() => {
-    if (syncIntervalRef.current) return;
-    syncIntervalRef.current = window.setInterval(syncVideos, 50);
-  }, [syncVideos]);
+  useEffect(() => { if (!playing) return; const id = window.setInterval(sync, 60); return () => clearInterval(id); }, [playing, sync]);
 
-  const stopSync = useCallback(() => {
-    if (syncIntervalRef.current) {
-      clearInterval(syncIntervalRef.current);
-      syncIntervalRef.current = null;
-    }
-  }, []);
-
-  const attemptPlay = useCallback(async () => {
-    const raw = rawVideoRef.current;
-    const final = finalVideoRef.current;
-    if (!raw || !final || hasAttemptedPlay) return;
-
-    setHasAttemptedPlay(true);
-    raw.currentTime = 0;
-    final.currentTime = 0;
-
-    try {
-      playPromiseRef.current = [
-        raw.play().catch(() => {}),
-        final.play().catch(() => {})
-      ];
-      await Promise.all(playPromiseRef.current);
-      startSync();
-    } catch {
-      // Autoplay blocked - user interaction required
-    }
-  }, [hasAttemptedPlay, startSync]);
-
-  const handleMove = useCallback((clientX: number) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    let percentage = (x / rect.width) * 100;
-    if (percentage < 2) percentage = 2;
-    if (percentage > 98) percentage = 98;
-    setSliderPosition(percentage);
-  }, []);
-
-  // Intersection Observer for autoplay when in view
-  useEffect(() => {
-    const element = containerRef.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsInView(true);
-            observer.unobserve(element);
-          }
-        });
-      },
-      { rootMargin: '100px', threshold: 0.1 }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  // Autoplay when in view
-  useEffect(() => {
-    if (isInView) {
-      attemptPlay();
-    } else {
-      stopSync();
-      rawVideoRef.current?.pause();
-      finalVideoRef.current?.pause();
-      setHasAttemptedPlay(false);
-    }
-    return () => stopSync();
-  }, [isInView, attemptPlay, stopSync]);
-
-  // Global mouse move & mouse up listeners so dragging continues smoothly even outside the container
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      handleMove(e.clientX);
-    };
-
-    const handleGlobalMouseUp = () => {
-      if (isDragging) {
-        setIsDragging(false);
-      }
-    };
-
-    if (isDragging) {
-      window.addEventListener('mousemove', handleGlobalMouseMove);
-      window.addEventListener('mouseup', handleGlobalMouseUp);
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleGlobalMouseMove);
-      window.removeEventListener('mouseup', handleGlobalMouseUp);
-    };
-  }, [isDragging, handleMove]);
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    handleMove(e.touches[0].clientX);
+  const toggle = () => {
+    const r = rawRef.current, f = finalRef.current;
+    if (!r || !f) return;
+    if (playing) { r.pause(); f.pause(); setPlaying(false); }
+    else { r.play().catch(() => {}); f.play().catch(() => {}); setPlaying(true); }
   };
 
+  const move = useCallback((clientX: number) => {
+    const el = containerRef.current; if (!el) return;
+    const rect = el.getBoundingClientRect();
+    let pct = ((clientX - rect.left) / rect.width) * 100;
+    setPos(Math.min(98, Math.max(2, pct)));
+  }, []);
+
+  useEffect(() => {
+    const mm = (e: MouseEvent) => { if (dragging) move(e.clientX); };
+    const mu = () => setDragging(false);
+    if (dragging) { window.addEventListener('mousemove', mm); window.addEventListener('mouseup', mu); }
+    return () => { window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
+  }, [dragging, move]);
+
+  const finalSrc = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+  const rawSrc = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4';
+
   return (
-    <section className="relative py-24 px-4 md:px-8 bg-charcoal border-y border-white/10 overflow-hidden select-none">
+    <section className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-y border-white/10">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-acid/10 border border-acid/30 text-acid font-mono text-xs rounded mb-3">
-            <Sliders className="w-3.5 h-3.5" />
-            <span>INTERACTIVE TIMELINE SCRUBBER</span>
-          </div>
-          <h2 className="font-display font-black text-4xl sm:text-6xl text-off-white uppercase tracking-tight">
-            RAW VS <span className="text-acid">FINAL EDIT</span>
-          </h2>
-          <p className="text-muted text-sm sm:text-base font-mono mt-3">
-            Drag the playhead divider to scrub between raw footage and the polished, high-retention final export.
-          </p>
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-acid/10 border border-acid/30 text-acid font-mono text-xs rounded-full mb-3"><Sliders className="w-3.5 h-3.5" /> INTERACTIVE BEFORE / AFTER</div>
+          <h2 className="font-display font-black text-4xl md:text-6xl uppercase tracking-tight">Raw vs <span className="text-acid">final edit</span></h2>
+          <p className="text-muted text-sm font-mono mt-3">DRAG THE PLAYHEAD · TAP PLAY TO SYNC BOTH CLIPS</p>
         </div>
-
-        {/* Interactive Comparison Canvas */}
-        <div
-          ref={containerRef}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            setIsDragging(true);
-            handleMove(e.clientX);
-          }}
-          onTouchMove={handleTouchMove}
-          className="relative aspect-video w-full max-w-5xl mx-auto rounded-xl overflow-hidden border border-white/20 select-none cursor-ew-resize shadow-2xl bg-black user-select-none"
-        >
-          {/* Layer 1: Right Side - FINAL POLISHED EDIT */}
-          <div className="absolute inset-0 w-full h-full pointer-events-none select-none">
-            <video
-              ref={finalVideoRef}
-              src="/videos/After_1.mp4"
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className="w-full h-full object-cover filter contrast-125 saturate-125 pointer-events-none select-none"
-            />
-
-            {/* Kinetic Graphics Overlays simulated for Final Edit */}
-            <div className="absolute bottom-16 right-20 bg-dark/90 border border-acid/60 text-acid px-3 py-1.5 font-mono text-xs rounded flex items-center gap-2 hidden sm:flex">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>REC.709 COLOR GRADED</span>
-            </div>
-
-            {/* Top Right Label */}
-            <div className="absolute top-4 right-4 bg-acid text-dark font-mono text-xs font-black px-3 py-1 rounded shadow hidden sm:block">
-              FINAL EDIT [POLISHED]
-            </div>
+        <div ref={containerRef} onMouseDown={(e) => { setDragging(true); move(e.clientX); }} onTouchMove={(e) => move(e.touches[0].clientX)} className="relative aspect-video w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-white/15 bg-black cursor-ew-resize select-none shadow-2xl" role="slider" aria-label="Before and after comparison" aria-valuenow={Math.round(pos)} aria-valuemin={0} aria-valuemax={100} tabIndex={0} onKeyDown={(e) => { if (e.key === 'ArrowLeft') setPos((p) => Math.max(2, p - 4)); if (e.key === 'ArrowRight') setPos((p) => Math.min(98, p + 4)); }}>
+          <video ref={finalRef} src={finalSrc} loop muted playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover contrast-125 saturate-125" />
+          <div className="absolute top-4 right-4 bg-acid text-black font-mono text-xs font-black px-3 py-1 rounded">FINAL — GRADED</div>
+          <div className="absolute bottom-14 right-4 bg-black/85 border border-acid/50 text-acid px-3 py-1.5 font-mono text-xs rounded hidden sm:flex items-center gap-2"><Sparkles className="w-3.5 h-3.5" /> REC.709 · KINETIC TYPE</div>
+          <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
+            <video ref={rawRef} src={rawSrc} loop muted playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover brightness-90 saturate-50" />
+            <div className="absolute inset-0 bg-emerald-950/25" />
+            <div className="absolute top-4 left-4 bg-black/85 border border-white/20 text-muted font-mono text-xs px-3 py-1 rounded">RAW — LOG · UNMIXED</div>
+            <div className="absolute bottom-10 left-4 bg-black/80 text-muted font-mono text-xs p-2 rounded border border-white/10 hidden sm:block">ROOM AUDIO · NO MOTION</div>
           </div>
-
-          {/* Layer 2: Left Side - RAW UNEDITED FOOTAGE (Clipped by Slider) */}
-          <div className="absolute inset-0 w-full h-full pointer-events-none select-none overflow-hidden" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
-            <video
-              ref={rawVideoRef}
-              src="/videos/Before_1.mp4"
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className="w-full h-full object-cover pointer-events-none select-none"
-            />
-
-            {/* Raw Log Footprint overlay */}
-            <div className="absolute inset-0 bg-emerald-950/20" />
-
-            {/* Top Left Label */}
-            <div className="absolute top-4 left-4 bg-dark/90 border border-white/20 text-muted font-mono text-xs px-3 py-1 rounded hidden sm:block">
-              RAW FOOTAGE [FLAT LOG]
-            </div>
-
-            <div className="absolute bottom-12 left-6 bg-dark/80 text-muted font-mono text-xs p-2 rounded border border-white/10 hidden sm:block">
-              UNMIXED ROOM AUDIO // NO MOTION GRAPHICS
-            </div>
+          <div style={{ left: `${pos}%` }} className="absolute inset-y-0 -ml-px w-0.5 bg-acid shadow-[0_0_18px_rgba(183,255,0,0.8)]">
+            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-acid text-black grid place-items-center border-2 border-white shadow-xl"><Sliders className="w-5 h-5" /></div>
           </div>
-
-          {/* Draggable Playhead Bar */}
-          <div
-            style={{ left: `${sliderPosition}%` }}
-            className="absolute inset-y-0 z-20 -ml-4 flex flex-col items-center justify-between py-4 pointer-events-none select-none"
-          >
-            {/* Center Handle Knob */}
-            <div className="w-8 h-8 rounded-full bg-acid text-dark flex items-center justify-center shadow-[0_0_20px_rgba(183,255,0,0.8)] border-2 border-white">
-              <Sliders className="w-4 h-4" />
-            </div>
-
-            {/* Bottom Drag Instruction */}
-            <div className="bg-dark/90 text-acid border border-acid/40 font-mono text-[10px] px-2 py-0.5 rounded shadow whitespace-nowrap">
-              DRAG TO COMPARE
-            </div>
-          </div>
+          <button onClick={(e) => { e.stopPropagation(); toggle(); }} aria-label={playing ? 'Pause comparison' : 'Play comparison'} className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/80 border border-white/20 rounded-full px-4 py-2 text-xs font-mono text-white hover:text-acid">
+            {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />} {playing ? 'PAUSE' : 'PLAY BOTH'}
+          </button>
         </div>
+        <p className="text-center text-xs font-mono text-muted mt-4">Replace src in RawVsEdited.tsx with your own Before/After pair for the live reveal.</p>
       </div>
     </section>
   );
