@@ -126,8 +126,8 @@ export const RawVsEdited: React.FC = () => {
           <video ref={finalRef} src={finalSrc} poster="/videos/After_1-thumbnail.jpg" aria-hidden="true" tabIndex={-1} autoPlay loop muted playsInline preload="auto" onError={handleFinalError} className="absolute inset-0 w-full h-full object-cover contrast-125 saturate-125" />
           <div className="absolute top-4 right-4 bg-acid text-black font-mono text-xs font-black px-3 py-1 rounded">FINAL — GRADED</div>
           <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-            <video ref={rawRef} src={rawSrc} poster="/videos/Before_1-thumbnail.jpg" aria-hidden="true" tabIndex={-1} autoPlay loop muted playsInline preload="auto" onError={handleRawError} className="absolute inset-0 w-full h-full object-cover brightness-90 saturate-50" />
-            <div className="absolute inset-0 bg-emerald-950/25" />
+            {/* Shown untouched: the source is already flat log, so any filter or tint here would fake the grade. */}
+            <video ref={rawRef} src={rawSrc} poster="/videos/Before_1-thumbnail.jpg" aria-hidden="true" tabIndex={-1} autoPlay loop muted playsInline preload="auto" onError={handleRawError} className="absolute inset-0 w-full h-full object-cover" />
           </div>
           <div style={{ left: `${pos}%` }} className="absolute inset-y-0 -ml-px w-0.5 bg-acid shadow-[0_0_18px_rgba(183,255,0,0.8)]">
             <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-acid text-black grid place-items-center border-2 border-white shadow-xl"><Sliders className="w-5 h-5" /></div>
