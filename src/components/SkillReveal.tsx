@@ -32,7 +32,7 @@ export const SkillReveal: React.FC = () => {
             })}
           </div>
           <div className="relative bg-dark border border-white/10 rounded-2xl p-7 flex flex-col justify-between overflow-hidden min-h-[320px]">
-            <span aria-hidden="true" className="pointer-events-none absolute -top-2 right-3 font-display font-black text-[7rem] leading-none text-white/40 select-none">{skill.percentage}%</span>
+            <span aria-hidden="true" className="pointer-events-none absolute -bottom-2 right-3 font-display font-black text-[7rem] leading-none text-white/40 select-none">{skill.percentage}%</span>
             <div className="relative z-10">
               <div className="flex items-center gap-2 font-mono text-xs text-muted pb-4 border-b border-white/10 mb-6"><Terminal className="w-4 h-4 text-acid" />EDITING_ROOM_CONSOLE <span className="ml-auto text-acid">ACTIVE</span></div>
               <span className="inline-block px-3 py-1 bg-white/5 border border-white/10 rounded text-acid text-xs font-mono">TARGET: {skill.name}</span>

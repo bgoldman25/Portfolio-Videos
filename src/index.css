@@ -19,6 +19,9 @@
 ::-webkit-scrollbar-thumb:hover { background: #B7FF00; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .animate-marquee { animation: marquee 28s linear infinite; }
+/* Cal.com's inline embed auto-grows the iframe to its content height. Inside #book the
+   panel is intentionally a fixed height, so clamp the iframe and let the booker scroll. */
+.cal-embed-fit iframe { height: 100% !important; min-height: 0 !important; max-height: 100% !important; }
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee, .animate-pulse { animation: none !important; }
   /* index.html carries Tailwind's .scroll-smooth, whose class specificity beats a plain

@@ -1,16 +1,23 @@
+const rawCalcomLink = (import.meta.env.VITE_CALCOM_LINK || "").trim();
+const calcomLink = rawCalcomLink
+  .replace(/^https?:\/\/(?:app\.)?cal\.com\//i, "")
+  .replace(/^\/+|\/+$/g, "");
+const calcomConfigured = calcomLink.length > 0 && !calcomLink.includes("your-username");
+
 export const SITE = {
   name: "Baltazar Goldman",
   role: "Freelance Video Editor",
-  email: "hello@baltazargoldman.com",
+  email: "goldmanbaltazar@gmail.com",
   location: "Remote / Worldwide",
-  timezone: "Asia/Kuala_Lumpur (UTC+8)",
+  timezone: "Asia/Manila (UTC+8)",
   responseTime: "Within 24h on business days",
   availability: { status: "open" as const, label: "Available for new projects", capacity: "2 project slots this month" },
-  // Call meeting link: Google Calendar Appointment Schedule or Calendly
-  // Paste your Google Calendar appointment URL here, or set VITE_BOOKING_URL env
-  bookingUrl: import.meta.env.VITE_BOOKING_URL || "https://calendar.google.com/calendar/appointment/schedules/PASTE_YOUR_SCHEDULE_ID_HERE",
-  bookingEmbedUrl: import.meta.env.VITE_BOOKING_EMBED_URL || "",
-  formspreeId: import.meta.env.VITE_FORMSPREE_ID || "YOUR_FORMSPREE_ID_HERE",
+  // Cal.com event type, e.g. "baltazargoldman/discovery" (a full cal.com URL also works)
+  calcom: {
+    link: calcomLink,
+    url: calcomConfigured ? `https://cal.com/${calcomLink}` : "",
+    configured: calcomConfigured,
+  },
   showreel: {
     src: "/videos/showreel-2026.mp4",
     title: "Showreel // 2026",

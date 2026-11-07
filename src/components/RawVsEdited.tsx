@@ -173,9 +173,7 @@ export const RawVsEdited: React.FC = () => {
     <section id="raw-vs-edited" className="relative py-20 md:py-28 px-4 md:px-6 bg-charcoal border-y border-white/10 scroll-mt-20">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-acid/10 border border-acid/30 text-acid font-mono text-xs rounded-full mb-3"><Sliders className="w-3.5 h-3.5" /> INTERACTIVE BEFORE / AFTER</div>
           <h2 className="font-display font-black text-4xl md:text-6xl uppercase tracking-tight">Raw vs <span className="text-acid">final edit</span></h2>
-          <p className="text-muted text-sm font-mono mt-3">DRAG THE PLAYHEAD · BOTH CLIPS RUNNING IN SYNC · SAME TAKE, FULL GRADE</p>
         </div>
         <div className="relative max-w-5xl mx-auto">
         <div
@@ -220,7 +218,6 @@ export const RawVsEdited: React.FC = () => {
             </div>
           )}
         </div>
-        <p className="text-center text-xs font-mono text-muted mt-4">Left: ungraded source + room audio · Right: final grade, motion callouts & mix</p>
       </div>
     </div>
     </section>

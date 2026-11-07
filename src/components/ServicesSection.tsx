@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, ArrowUpRight, Film, Smartphone, Star } from 'lucide-react';
+import { Check, Film, Smartphone, Star } from 'lucide-react';
 import { SERVICE_TIERS } from '../data/projects';
 
 export const ServicesSection: React.FC = () => (
@@ -7,7 +7,6 @@ export const ServicesSection: React.FC = () => (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div><div className="flex items-center gap-2 text-xs font-mono text-acid mb-2"><Film className="w-4 h-4" /><span>[ 03 // SERVICES ]</span></div><h2 className="font-display font-black text-5xl md:text-6xl uppercase tracking-tight">Services & <span className="text-acid">offerings</span></h2></div>
-        <a href="#book" className="inline-flex items-center gap-2 font-mono text-xs text-acid border border-acid/40 px-4 py-2 rounded-full hover:bg-acid hover:text-black transition-colors">Book a scoping call <ArrowUpRight className="w-4 h-4" /></a>
       </div>
       <div className="grid md:grid-cols-2 gap-5">
         {SERVICE_TIERS.map((tier) => (
@@ -17,7 +16,7 @@ export const ServicesSection: React.FC = () => (
             <h3 className="font-display font-black text-2xl md:text-3xl uppercase mb-2.5">{tier.title}</h3>
             <p className="text-muted text-sm leading-relaxed mb-6">{tier.description}</p>
             <div className="space-y-2.5 text-sm mb-7 flex-1">{tier.deliverables.map((d) => <div key={d} className="flex gap-2.5"><Check className="w-4 h-4 text-acid shrink-0 mt-0.5" /><span className="text-off-white/90">{d}</span></div>)}</div>
-            <div className="pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+            <div className="pt-5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 md:min-h-[6rem]">
               <span className="font-mono text-xs text-muted">IDEAL FOR <strong className="text-off-white">{tier.idealFor}</strong></span>
               <a href="#contact" className="inline-block py-1.5 font-mono text-xs text-acid font-bold hover:underline">GET A QUOTE →</a>
             </div>

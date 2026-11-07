@@ -5,7 +5,7 @@ import { SITE } from '../data/site';
 
 const SERVICE_OPTIONS = ['Long Form — Standard', 'Long Form — Premium', 'Short Form — Standard', 'Short Form — Premium', 'Other / Custom Campaign'];
 const TIMELINES = ['ASAP (< 1 week)', 'This month', 'Flexible', 'Ongoing retainer'];
-const BUDGETS = ['Under $500', '$500 – $1,500', '$1,500 – $4,000', '$4,000+', 'Prefer to discuss'];
+const BUDGETS = ['Under $500', '$500-$1000', '$1000+'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MIN_BRIEF = 20;
 const MAX_BRIEF = 2000;
@@ -49,14 +49,14 @@ export const ContactSection: React.FC = () => {
     }
     setError(null);
     setStatus('sending');
-    const hasFormspree = Boolean(SITE.formspreeId) && !SITE.formspreeId.includes('YOUR_');
     try {
-      if (hasFormspree) {
-        const res = await fetch(`https://formspree.io/f/${SITE.formspreeId}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ name: form.name, email: form.email, service: form.service, timeline: form.timeline, budget: form.budget, description: form.description, referenceUrls: form.referenceUrls }) });
-        if (!res.ok) throw new Error('formspree failed');
+      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ name: form.name, email: form.email, service: form.service, timeline: form.timeline, budget: form.budget, description: form.description, referenceUrls: form.referenceUrls, website: form.honeypot }) });
+      if (res.ok) {
         setStatus('sent');
         return;
       }
+      if (res.status !== 501) throw new Error('contact api failed');
+      // 501: Resend is not configured yet — fall through to the mailto draft below.
       // No form endpoint configured: hand the brief to the visitor's mail client.
       const subject = encodeURIComponent(`Project Inquiry — ${form.service} — ${form.name}`);
       const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\nService: ${form.service}\nTimeline: ${form.timeline}\nBudget: ${form.budget}\n\n${form.description}\n\nReferences: ${form.referenceUrls || '—'}`);
@@ -74,9 +74,9 @@ export const ContactSection: React.FC = () => {
     <section id="contact" className="relative py-20 md:py-28 px-4 md:px-6 bg-dark border-t border-white/10 scroll-mt-20">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-acid/10 border border-acid/30 text-acid font-mono text-xs rounded-full mb-3"><Film className="w-3.5 h-3.5" /> PROJECT INQUIRY</div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 text-acid font-mono text-xs mb-3"><Film className="w-3.5 h-3.5" />[ PROJECT INQUIRY ]</div>
           <h2 className="font-display font-black text-5xl md:text-7xl uppercase tracking-tight">Let's make <span className="text-acid">something.</span></h2>
-          <p className="text-muted font-mono text-sm mt-3">Raw footage, a channel, or a campaign — send the brief. I reply inside 24h with next steps.</p>
+          <p className="text-muted font-mono text-sm mt-3">Have a question before booking? Go ahead and fire it here! I reply inside 24h with answers and next steps.</p>
         </div>
         <div className="bg-charcoal border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl">
           <AnimatePresence mode="wait">
@@ -123,7 +123,6 @@ export const ContactSection: React.FC = () => {
                 <button type="submit" disabled={status === 'sending'} className="w-full py-4 bg-acid text-black font-display font-black text-base tracking-wide rounded-xl uppercase hover:bg-white transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {status === 'sending' ? 'SENDING BRIEF…' : 'Send project brief'} <Send className="w-4 h-4" />
                 </button>
-                <p className="text-center text-xs font-mono text-muted">No spam. No obligation. You'll get a scoped quote or a polite pass within 24h.</p>
               </motion.form>
             )}
           </AnimatePresence>

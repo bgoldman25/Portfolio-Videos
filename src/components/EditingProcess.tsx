@@ -14,7 +14,6 @@ export const EditingProcess: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div><div className="flex items-center gap-2 text-xs font-mono text-acid mb-2"><Scissors className="w-4 h-4" /><span>[ 02 // PROCESS ]</span></div><h2 className="font-display font-black text-5xl md:text-6xl uppercase tracking-tight">The cutting <span className="text-acid">process</span></h2></div>
-          <p className="text-muted font-mono text-xs max-w-md leading-relaxed">Editing isn't making footage look good. It's deciding what deserves to stay.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" role="group" aria-label="Editing process steps">
           {EDITING_PROCESS_STEPS.map((s, i) => (
