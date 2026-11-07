@@ -17,5 +17,5 @@ npm run preview # preview production build
 - Contact: Resend via `api/contact.js` (`RESEND_API_KEY` server-side), falls back to `mailto:` (see `.env.example` + `BOOKING_SETUP.md`)
 
 ## Notes
-- Cold-open intro shows once per session; SKIP INTRO / ESC always works, sound is off by default.
+- Cold-open intro shows once per session; ESC always works, sound is off by default.
 - Do not commit `.env.local`. `vercel.json` handles SPA fallback + asset caching.

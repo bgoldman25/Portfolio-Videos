@@ -63,7 +63,6 @@ export const ColdOpen: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
     <AnimatePresence>
       {stage !== 'done' && (
         <motion.div key="cold" initial={{ opacity: 1 }} exit={{ opacity: 0 }} ref={panelRef} tabIndex={-1} className="fixed inset-0 z-50 bg-dark flex flex-col items-center justify-center overflow-hidden select-none px-6 outline-none" role="dialog" aria-modal="true" aria-label="Intro">
-          <button onClick={skip} className="absolute top-5 right-5 z-10 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-mono text-white/80 hover:text-acid hover:border-acid">SKIP INTRO ✕</button>
           {stage === 'waiting' && (
             <button onClick={async () => { await soundEngine.unlockAudio(); soundEngine.playHeroRiserSound(); setStage('cuts'); }} className="flex flex-col items-center gap-5 group">
               <span className="w-3 h-3 bg-acid rounded-full animate-pulse" />

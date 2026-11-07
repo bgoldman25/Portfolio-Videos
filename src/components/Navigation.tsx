@@ -8,7 +8,7 @@ const LINKS = [
   { href: '#about', id: 'about', label: 'About', n: '04' },
 ];
 
-export const Navigation: React.FC<{ onReplayIntro?: () => void }> = ({ onReplayIntro }) => {
+export const Navigation: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('');
@@ -62,7 +62,6 @@ export const Navigation: React.FC<{ onReplayIntro?: () => void }> = ({ onReplayI
         </nav>
         <div className="flex items-center gap-2">
           <a href="#book" className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-acid text-black text-xs font-bold hover:bg-white transition-colors whitespace-nowrap shrink-0"><Calendar className="w-3.5 h-3.5 shrink-0" />Book a call</a>
-          {onReplayIntro && <button onClick={onReplayIntro} className="hidden 2xl:inline text-xs font-mono text-muted hover:text-acid whitespace-nowrap shrink-0">REPLAY INTRO</button>}
           <button ref={menuBtnRef} onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-nav" className="md:hidden p-2 min-w-[40px] min-h-[40px] grid place-items-center rounded border border-white/40">{open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button>
         </div>
       </div>
